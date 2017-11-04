@@ -52,6 +52,16 @@ Matrix::Matrix(Matrix& t)
 	this->m15 = t.m15;
 }
 
+Matrix::Matrix(float m0, float m1, float m2, float m3,
+	float m4, float m5, float m6, float m7,
+	float m8, float m9, float m10, float m11,
+	float m12, float m13, float m14, float m15)
+
+	:m0(m0), m1(m1), m2(m2), m3(m3),
+	m4(m4), m5(m5), m6(m6), m7(m7),
+	m8(m8), m9(m9), m10(m10), m11(m11),
+	m12(m12), m13(m13), m14(m14), m15(m15) {}
+
 
 Matrix::~Matrix()
 {
@@ -268,6 +278,11 @@ Matrix Matrix::operator*( Matrix& rhs)
 
 	return tmp;
 }
+
+//Matrix Matrix::operator*(float s)
+//{
+//	return Matrix();
+//}
 
 Matrix& Matrix::operator/=(float rhs)
 { 

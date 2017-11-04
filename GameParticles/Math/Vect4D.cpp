@@ -6,10 +6,10 @@
 
 Vect4D::Vect4D()
 {
-	this->x = 0.0;
-	this->y = 0.0;
-	this->z = 0.0;
-	this->w = 1.0;
+	this->x = 0.0f;
+	this->y = 0.0f;
+	this->z = 0.0f;
+	this->w = 1.0f;
 }
 
 Vect4D::Vect4D( float tx, float ty, float tz, float tw )
@@ -41,35 +41,17 @@ void Vect4D::norm(Vect4D& out)
 
 Vect4D Vect4D::operator + ( Vect4D t ) 
 {
-	Vect4D out;
-	
-	out.x = this->x + t.x;
-	out.y = this->y + t.y;
-	out.z = this->z + t.z;
-
-	return out;
+	return Vect4D(this->x + t.x, this->y + t.y, this->z + t.z);
 }
 
 Vect4D Vect4D::operator - ( Vect4D t )
 {
-	Vect4D out;
-	
-	out.x = this->x - t.x;
-	out.y = this->y - t.y;
-	out.z = this->z - t.z;
-
-	return out;
+	return Vect4D(this->x - t.x, this->y - t.y, this->z - t.z);
 }
 
-Vect4D Vect4D::operator *( float scale)
+Vect4D Vect4D::operator *(float scale)
 {
-	Vect4D tmp;
-
-	tmp.x = this->x * scale;
-	tmp.y = this->y * scale;
-	tmp.z = this->z * scale;
-
-	return tmp;
+	return Vect4D(this->x * scale, this->y * scale, this->z * scale);
 }
 
 float& Vect4D::operator[]( VECT_ENUM e )
