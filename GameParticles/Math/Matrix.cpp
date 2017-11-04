@@ -6,56 +6,21 @@
 
 
 Matrix::Matrix()
-{	// constructor for the matrix
-	this->m0 = 0.0;
-	this->m1 = 0.0;
-	this->m2 = 0.0;
-	this->m3 = 0.0;
+	:m0(0.0f), m1(0.0f), m2(0.0f), m3(0.0f),
+	m4(0.0f), m5(0.0f), m6(0.0f), m7(0.0f),
+	m8(0.0f), m9(0.0f), m10(0.0f), m11(0.0f),
+	m12(0.0f), m13(0.0f), m14(0.0f), m15(0.0f) {}
 
-	this->m4 = 0.0;
-	this->m5 = 0.0;
-	this->m6 = 0.0;
-	this->m7 = 0.0;
+Matrix::Matrix(const Matrix& t)
+	:m0(t.m0), m1(t.m1), m2(t.m2), m3(t.m3),
+	m4(t.m4), m5(t.m5), m6(t.m6), m7(t.m7),
+	m8(t.m8), m9(t.m9), m10(t.m10), m11(t.m11),
+	m12(t.m12), m13(t.m13), m14(t.m14), m15(t.m15) {}
 
-	this->m8 = 0.0;
-	this->m9 = 0.0;
-	this->m10 = 0.0;
-	this->m11 = 0.0;
-	
-	this->m12 = 0.0;
-	this->m13 = 0.0;
-	this->m14 = 0.0;
-	this->m15 = 0.0;
-}
-
-
-Matrix::Matrix(Matrix& t)
-{ // copy constructor
-	this->m0 = t.m0;
-	this->m1 = t.m1;
-	this->m2 = t.m2;
-	this->m3 = t.m3;
-
-	this->m4 = t.m4;
-	this->m5 = t.m5;
-	this->m6 = t.m6;
-	this->m7 = t.m7;
-
-	this->m8 = t.m8;
-	this->m9 = t.m9;
-	this->m10 = t.m10;
-	this->m11 = t.m11;
-	
-	this->m12 = t.m12;
-	this->m13 = t.m13;
-	this->m14 = t.m14;
-	this->m15 = t.m15;
-}
-
-Matrix::Matrix(float m0, float m1, float m2, float m3,
-	float m4, float m5, float m6, float m7,
-	float m8, float m9, float m10, float m11,
-	float m12, float m13, float m14, float m15)
+Matrix::Matrix(const float &m0, const float &m1, const float &m2, const float &m3,
+			   const float &m4, const float &m5, const float &m6, const float &m7,
+			   const float &m8, const float &m9, const float &m10, const float &m11,
+			   const float &m12, const float &m13, const float &m14, const float &m15)
 
 	:m0(m0), m1(m1), m2(m2), m3(m3),
 	m4(m4), m5(m5), m6(m6), m7(m7),
@@ -84,14 +49,14 @@ void Matrix::setIdentMatrix()
 	this->m9 = 0.0;
 	this->m10 = 1.0;
 	this->m11 = 0.0;
-	
+		
 	this->m12 = 0.0;
 	this->m13 = 0.0;
 	this->m14 = 0.0;
 	this->m15 = 1.0;
 }
 
-void Matrix::setTransMatrix(Vect4D *t)
+void Matrix::setTransMatrix(const Vect4D *t)
 { // set the translation matrix (note: we are row major)
 	this->m0 = 1.0;
 	this->m1 = 0.0;
@@ -114,7 +79,7 @@ void Matrix::setTransMatrix(Vect4D *t)
 	this->m15 = 1.0;
 }
 
-void Matrix::set( MatrixRowEnum row, Vect4D *t )
+void Matrix::set(const MatrixRowEnum &row, const Vect4D *t )
 {
 	// initialize the rows of the matrix
 	switch( row )
@@ -153,7 +118,7 @@ void Matrix::set( MatrixRowEnum row, Vect4D *t )
 	}
 }
 
-float &Matrix::operator[](INDEX_ENUM e)
+float &Matrix::operator[](const INDEX_ENUM &e)
 {
 	// get the individual elements
 	switch(e)
@@ -214,7 +179,7 @@ float &Matrix::operator[](INDEX_ENUM e)
 }
 
 
-void Matrix::get( MatrixRowEnum row, Vect4D *t )
+void Matrix::get(const MatrixRowEnum &row, Vect4D *t )
 { // get a row of the matrix
 	switch( row )
 	{
@@ -547,7 +512,7 @@ void Matrix::Inverse( Matrix &out )
 	out = tmp;
 }
 
-void Matrix::setScaleMatrix(Vect4D *scale)
+void Matrix::setScaleMatrix(const Vect4D *scale)
 {
 	//	{	sx		0		0		0	}
 	//	{	0		sy		0		0	}
@@ -576,7 +541,7 @@ void Matrix::setScaleMatrix(Vect4D *scale)
 	this->m15 = 1.0;
 }
 
-void Matrix::setRotZMatrix(float az)
+void Matrix::setRotZMatrix(const float &az)
 {
 	//	{	cos		-sin	0		0	}
 	//	{	sin		cos		0		0	}

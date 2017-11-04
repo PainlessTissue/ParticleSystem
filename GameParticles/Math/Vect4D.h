@@ -7,6 +7,9 @@
 // includes
 #include "Enum.h"
 
+#include <xmmintrin.h>
+#include <smmintrin.h>  
+
 // Foward Declarations
 class Matrix;
 
@@ -16,27 +19,45 @@ class Vect4D
 public:
 	friend class Matrix;
 
-	Vect4D();	
-	Vect4D( float tx, float ty, float tz, float tw = 1.0f );
+	Vect4D();
+	Vect4D(const float &tx, const float &ty, const float &tz, const float &tw = 1.0f);
 	~Vect4D();
 
-	void norm( Vect4D &out );
-	void set( float tx, float ty, float tz, float tw = 1.0f);
-	
-	Vect4D operator + ( Vect4D t );
-	Vect4D operator - ( Vect4D t );
-	Vect4D operator * ( float scale );
+	void norm(Vect4D &out) const;
+	void set(const float &tx, const float &ty, const float &tz, const float &tw = 1.0f);
 
-	void Cross(Vect4D &vin, Vect4D &vout);
+	Vect4D operator + (const Vect4D &t) const;
+	Vect4D operator - (const Vect4D &t) const;
+	Vect4D operator * (const float &scale) const;
 
-	float &operator[]( VECT_ENUM e);
+	void Cross(const Vect4D &vin, Vect4D &vout) const;
 
+	float &operator[](const VECT_ENUM &e);
 
+#if 1
 private:
 	float x;
 	float y;
 	float z;
 	float w;
 };
+#else
 
+public:
+	union
+	{
+		__m128 _m;
+
+		struct
+		{
+			float x;
+			float y;
+			float z;
+			float w;
+
+		};
+	};
+};
+
+#endif //if
 #endif  //Vect4D.h
