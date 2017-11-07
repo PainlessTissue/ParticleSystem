@@ -2,14 +2,15 @@
 #include "Matrix.h"
 
 Particle::Particle()
+	:life(0.0f), rotation(0.0f), rotation_velocity(0.5f)
 {
 	// construtor
-	this->life = 0.0f;
+//	this->life = 0.0f;
 	this->position.set( 0.0f, 0.0f,  0.0f );
 	this->velocity.set( 0.0f, 0.0f,  0.0f );
 	this->scale.set( 1.0f, 1.0f, 1.0f );
-	this->rotation = 0.0f;
-	this->rotation_velocity = 0.5f;
+//	this->rotation = 0.0f;
+//	this->rotation_velocity = 0.5f;
 
 }
 
@@ -28,6 +29,16 @@ void Particle::CopyDataOnly( Particle *p )
 	this->rotation = p->rotation;
 	this->rotation_velocity = p->rotation_velocity;
 	this->life     = p->life;
+}
+
+void * Particle::operator new(size_t i)
+{
+	return _mm_malloc(i, 16);
+}
+
+void Particle::operator delete(void * p)
+{
+	_mm_free(p);
 }
 
 void Particle::Update(const float& time_elapsed)

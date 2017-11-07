@@ -58,7 +58,9 @@ void ParticleEmitter::SpawnParticle()
 	{
 	
 		// create new particle
-		Particle *newParticle = new Particle();
+		Particle *newParticle;// = new Particle();
+
+		newParticle = new Particle();
 
 		// initialize the particle
 		newParticle->life     = 0.0f;
@@ -376,6 +378,7 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	}
 	sc = sc * var;
 }
+
 
 
 // End of file

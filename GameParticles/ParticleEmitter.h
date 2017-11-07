@@ -44,6 +44,7 @@ private:
 	std::list<Particle> drawBuffer;
 	std::list<Particle> particle_list;
 
+
 };
 
 #endif // PARTICLEEMITTER_H

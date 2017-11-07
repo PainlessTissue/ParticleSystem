@@ -27,6 +27,14 @@ Matrix::Matrix(const float &m0, const float &m1, const float &m2, const float &m
 	m8(m8), m9(m9), m10(m10), m11(m11),
 	m12(m12), m13(m13), m14(m14), m15(m15) {}
 
+Matrix::Matrix(const Vect4D & v0, const Vect4D & v1, const Vect4D & v2, const Vect4D & v3)
+{
+	this->v0 = v0;
+	this->v1 = v1;
+	this->v2 = v2;
+	this->v3 = v3;
+}
+
 
 Matrix::~Matrix()
 {

@@ -12,6 +12,8 @@
 
 #define UNUSED_VAR(v) ((void *)v)
 
+//TODO may want to change the main to be more attractive, not using the ugly microsoft m,main
+
 // WIN32 - prototype
 int main (int argc, char * const argv[]);
 

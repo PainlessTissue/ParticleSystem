@@ -4,7 +4,7 @@
 // include
 #include "Vect4D.h"
 
-class Particle
+__declspec(align(16)) class Particle
 {
 public:
 	friend class ParticleEmitter;
@@ -13,6 +13,11 @@ public:
 	~Particle();
 	void Update(const float& time_elapsed);
 	void CopyDataOnly( Particle *p );
+
+	//needed for 16 byte alignment and simd
+	void* operator new(size_t i);
+	void operator delete(void* p);
+
 private:
 	Particle *next;
 	Particle *prev;

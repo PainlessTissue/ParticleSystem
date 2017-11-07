@@ -10,6 +10,11 @@
 #include <xmmintrin.h>
 #include <smmintrin.h>  
 
+#pragma warning(disable : 4201)
+#pragma warning(disable : 4588)
+#pragma warning(disable : 4587)
+
+
 // Foward Declarations
 class Matrix;
 
@@ -23,6 +28,9 @@ public:
 	Vect4D(const float &tx, const float &ty, const float &tz, const float &tw = 1.0f);
 	~Vect4D();
 
+	//specialized for intrinsics
+	Vect4D(const __m128 &_m);
+
 	void norm(Vect4D &out) const;
 	void set(const float &tx, const float &ty, const float &tz, const float &tw = 1.0f);
 
@@ -34,16 +42,7 @@ public:
 
 	float &operator[](const VECT_ENUM &e);
 
-#if 1
 private:
-	float x;
-	float y;
-	float z;
-	float w;
-};
-#else
-
-public:
 	union
 	{
 		__m128 _m;
@@ -54,10 +53,8 @@ public:
 			float y;
 			float z;
 			float w;
-
 		};
 	};
 };
 
-#endif //if
 #endif  //Vect4D.h

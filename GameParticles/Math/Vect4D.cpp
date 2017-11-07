@@ -5,14 +5,23 @@
 
 
 Vect4D::Vect4D()
-	:x(0.0f), y(0.0f), z(0.0f), w(1.0f) {}
+{
+	this->_m = _mm_setzero_ps();
+}
 
 Vect4D::Vect4D(const float &tx, const float &ty, const float &tz, const float &tw)
-	: x(tx), y(ty), z(tz), w(tw) {}
+{
+	this->_m = _mm_set_ps(tw, tz, ty, tx);
+}
 
 Vect4D::~Vect4D()
 {
 	// nothing to delete
+}
+
+Vect4D::Vect4D(const __m128 &_m)
+{
+	this->_m = _m;
 }
 
 void Vect4D::norm(Vect4D& out) const
@@ -31,17 +40,21 @@ void Vect4D::norm(Vect4D& out) const
 
 Vect4D Vect4D::operator + (const Vect4D &t) const
 {
-	return Vect4D(this->x + t.x, this->y + t.y, this->z + t.z);
+	return Vect4D(_mm_add_ps(this->_m, t._m));
 }
 
 Vect4D Vect4D::operator - (const Vect4D &t) const
 {
-	return Vect4D(this->x - t.x, this->y - t.y, this->z - t.z);
+	return Vect4D(this->x - t.x, this->y - t.y, this->z - t.z, this->w - t.w);
+	//__m128 d = _mm_sub_ps(this->_m, t._m);
+	//return Vect4D(d);
+	//return Vect4D(_mm_sub_ps(this->_m, t._m));
 }
 
 Vect4D Vect4D::operator *(const float &scale) const
 {
-	return Vect4D(this->x * scale, this->y * scale, this->z * scale);
+	//return Vect4D(this->x * scale, this->y * scale, this->z * scale);
+	return Vect4D(_mm_mul_ps(this->_m, _mm_set_ps1(scale)));
 }
 
 float& Vect4D::operator[](const VECT_ENUM &e )
@@ -76,10 +89,7 @@ void Vect4D::Cross(const Vect4D& vin, Vect4D& vout) const
 
 void Vect4D::set(const float &tx, const float &ty, const float &tz, const float &tw)
 {
-	this->x = tx;
-	this->y = ty;
-	this->z = tz;
-	this->w = tw;
+	this->_m = _mm_set_ps(tw, tz, ty, tx);
 }
 
 // End of file
