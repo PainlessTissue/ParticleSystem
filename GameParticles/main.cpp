@@ -6,16 +6,12 @@
 #include "DO_NOT_MODIFY\GlobalTimer.h"
 #include "DO_NOT_MODIFY\EventHandler.h"
 #include "DO_NOT_MODIFY\OpenGLInterface.h"
-#include "DO_NOT_MODIFY\Trace.h"
 
 #include "ParticleEmitter.h"
 
 #define UNUSED_VAR(v) ((void *)v)
 
-//TODO may want to change the main to be more attractive, not using the ugly microsoft m,main
-
-// WIN32 - prototype
-int main (int argc, char * const argv[]);
+int main();
 
 // WinMain required by windows for all win32 applications.
 // This is our Windows entry point.
@@ -25,17 +21,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	UNUSED_VAR(lpCmdLine);
 	UNUSED_VAR(hPrevInstance);
 	OpenGLDevice::SetHInstance(hInstance);
-	main(__argc, __argv);
+	main();
 }
 
 // main program
-int main (int argc, char * const argv[])
+int main()
 {
-	UNUSED_VAR(argc);
-	UNUSED_VAR(argv);
-
-	Trace::out("test\n");
-
 	bool success = false;
 	srand(1);
 
@@ -69,8 +60,7 @@ int main (int argc, char * const argv[])
 		TransMatrix.setTransMatrix( &Trans );
 
 		// multiply them together
-		Matrix tmp;
-		tmp = CameraMatrix * TransMatrix;
+		Matrix tmp(CameraMatrix * TransMatrix);
 
 	// counter for printing
 	int i = 0;
@@ -137,7 +127,10 @@ int main (int argc, char * const argv[])
 			i = 0;
 			float updateTime = updateTimer.timeInSeconds();
 			float drawTime = drawTimer.timeInSeconds();
-			printf("LoopTime: update:%f ms  draw:%f ms  tot:%f\n",updateTime * 1000.0f, drawTime * 1000.0f, (updateTime + drawTime) *1000.0f);
+			printf("\nLoopTime: update:%f ms  draw:%f ms  tot:%f\n",updateTime * 1000.0f, drawTime * 1000.0f, (updateTime + drawTime) *1000.0f);
+			
+			//printf("Size of Particle %i Size of Particle Emitter %i Sizeof Matrix %i Size of Vect %i", sizeof(Particle), sizeof(ParticleEmitter), sizeof(Matrix), sizeof(Vect4D));
+
 		}
 	}
 	

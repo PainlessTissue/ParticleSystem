@@ -2,15 +2,12 @@
 #include "Matrix.h"
 
 Particle::Particle()
-	:life(0.0f), rotation(0.0f), rotation_velocity(0.5f)
+	:rotation_velocity(0.5f), life(0.0f), rotation(0.0f)
 {
 	// construtor
-//	this->life = 0.0f;
 	this->position.set( 0.0f, 0.0f,  0.0f );
 	this->velocity.set( 0.0f, 0.0f,  0.0f );
 	this->scale.set( 1.0f, 1.0f, 1.0f );
-//	this->rotation = 0.0f;
-//	this->rotation_velocity = 0.5f;
 
 }
 
@@ -19,7 +16,7 @@ Particle::~Particle()
 	// nothing to do
 }
 
-void Particle::CopyDataOnly( Particle *p )
+void Particle::CopyDataOnly(const Particle *p )
 {
 	// copy the data only
 	// this way of copying data is more efficient that element by element
@@ -62,10 +59,10 @@ void Particle::Update(const float& time_elapsed)
 
 	Matrix tmp;
 
-	tmp.set(Matrix::MATRIX_ROW_0, &this->diff_Row0);
-	tmp.set(Matrix::MATRIX_ROW_1, &this->diff_Row1);
-	tmp.set(Matrix::MATRIX_ROW_2, &this->diff_Row2);
-	tmp.set(Matrix::MATRIX_ROW_3, &this->diff_Row3);
+	tmp.set(0, &this->diff_Row0);
+	tmp.set(1, &this->diff_Row1);
+	tmp.set(2, &this->diff_Row2);
+	tmp.set(3, &this->diff_Row3);
 
 	float MatrixScale = tmp.Determinant();
 

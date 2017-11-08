@@ -23,10 +23,10 @@ public:
 	void Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc);
 
 private:
-	
+	//128
 	Vect4D	start_position;
 	Vect4D	start_velocity;
-	
+
 	float	max_life;
 	int		max_particles;
 	int		last_active_particle;
@@ -43,8 +43,6 @@ private:
 	float	scale_variance;
 	std::list<Particle> drawBuffer;
 	std::list<Particle> particle_list;
-
-
 };
 
 #endif // PARTICLEEMITTER_H

@@ -8,6 +8,8 @@
 #include "ParticleEmitter.h"
 #include "Settings.h"
 
+#include "DO_NOT_MODIFY\Trace.h"
+
 static const unsigned char squareColors[] = 
 {
 	255,  255,  000,  255,
@@ -28,16 +30,16 @@ static const float squareVertices[] =
 ParticleEmitter::ParticleEmitter()
 :	start_position( 0.0f, 0.0f, 0.0f ),
 	start_velocity( 0.0f, 1.0f, 0.0f), 
-	max_life( MAX_LIFE ),
-	max_particles( NUM_PARTICLES ),
-	last_active_particle( -1 ),
+	max_life(MAX_LIFE),
+	max_particles(NUM_PARTICLES),
+	last_active_particle(-1),
 	spawn_frequency( 0.0000001f ),	
 	last_spawn( globalTimer::getTimerInSec() ),
 	last_loop(  globalTimer::getTimerInSec() ),
 	headParticle(0),
 	vel_variance( 1.0f, 4.0f, 0.4f ),
 	pos_variance( 1.0f, 1.0f, 1.0f ),
-	scale_variance( 2.5f),
+	scale_variance(2.5f),
 	particle_list( NUM_PARTICLES )
 {
 	// nothing to do
@@ -58,9 +60,7 @@ void ParticleEmitter::SpawnParticle()
 	{
 	
 		// create new particle
-		Particle *newParticle;// = new Particle();
-
-		newParticle = new Particle();
+		Particle *newParticle = new Particle();
 
 		// initialize the particle
 		newParticle->life     = 0.0f;
@@ -132,11 +132,12 @@ void ParticleEmitter::update()
 			// increment to next point
 			p = p->next;
 		}
+
 	}
 
 	//move a copy to vector for faster iterations in draw
 	p = this->headParticle;
-	bufferCount = 0;
+	//bufferCount = 0;
 
 	// clear the buffer
 	drawBuffer.clear();
@@ -151,11 +152,11 @@ void ParticleEmitter::update()
 		p = p->next;
 
 		// track the current count
-		bufferCount++;
+		//bufferCount++;
 	}
 
 	// make sure the counts track (asserts go away in release - relax Christos)
-	assert(bufferCount == (last_active_particle+1));
+	//assert(bufferCount == (last_active_particle+1));
 	last_loop = current_time;
 }
 	   
@@ -224,7 +225,7 @@ void ParticleEmitter::draw()
 
 		// get the position from this matrix
 		Vect4D camPosVect;
-		cameraMatrix.get( Matrix::MATRIX_ROW_3, &camPosVect );
+		cameraMatrix.get(3, &camPosVect );
 
 		// OpenGL goo... don't worrry about this
 		glVertexPointer(3, GL_FLOAT, 0, squareVertices);
@@ -262,10 +263,10 @@ void ParticleEmitter::draw()
 		glLoadMatrixf(reinterpret_cast<float*>(&(tmp)));
 
 		// squirrel away matrix for next update
-		tmp.get(Matrix::MATRIX_ROW_0, &it->curr_Row0 );
-		tmp.get(Matrix::MATRIX_ROW_1, &it->curr_Row1 );
-		tmp.get(Matrix::MATRIX_ROW_2, &it->curr_Row2 );
-		tmp.get(Matrix::MATRIX_ROW_3, &it->curr_Row3 );
+		tmp.get(0, &it->curr_Row0 );
+		tmp.get(1, &it->curr_Row1 );
+		tmp.get(2, &it->curr_Row2 );
+		tmp.get(3, &it->curr_Row3 );
 
 		// draw the trangle strip
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

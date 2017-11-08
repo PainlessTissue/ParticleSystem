@@ -12,15 +12,17 @@ public:
 	Particle();	
 	~Particle();
 	void Update(const float& time_elapsed);
-	void CopyDataOnly( Particle *p );
+	void CopyDataOnly(const Particle *p );
 
 	//needed for 16 byte alignment and simd
 	void* operator new(size_t i);
 	void operator delete(void* p);
 
-private:
+private: //272
 	Particle *next;
 	Particle *prev;
+	float padding1;
+	float padding2;
 
 	Vect4D	prev_Row0;
 	Vect4D	prev_Row1;
@@ -28,20 +30,24 @@ private:
 	Vect4D  prev_Row3;
 
 	Vect4D	position;
-	float	life;
 	Vect4D	velocity;
 	Vect4D	scale;
-	float	rotation;
 	Vect4D  diff_Row0;
 	Vect4D  diff_Row1;
 	Vect4D  diff_Row2;
 	Vect4D  diff_Row3;
-	float	rotation_velocity;
-	
+
 	Vect4D	curr_Row0;
 	Vect4D	curr_Row1;
 	Vect4D  curr_Row2;
 	Vect4D  curr_Row3;
+
+	//moving these three down moved the size of particle from 304 to 272
+	float	rotation_velocity;
+	float	life;
+	float	rotation;
+	float padding3;
+
 };
 
 

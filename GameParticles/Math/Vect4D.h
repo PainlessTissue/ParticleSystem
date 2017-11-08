@@ -10,11 +10,6 @@
 #include <xmmintrin.h>
 #include <smmintrin.h>  
 
-#pragma warning(disable : 4201)
-#pragma warning(disable : 4588)
-#pragma warning(disable : 4587)
-
-
 // Foward Declarations
 class Matrix;
 
@@ -31,7 +26,7 @@ public:
 	//specialized for intrinsics
 	Vect4D(const __m128 &_m);
 
-	void norm(Vect4D &out) const;
+	void norm(Vect4D &out);
 	void set(const float &tx, const float &ty, const float &tz, const float &tw = 1.0f);
 
 	Vect4D operator + (const Vect4D &t) const;
@@ -42,7 +37,11 @@ public:
 
 	float &operator[](const VECT_ENUM &e);
 
+	//faster square root because math.sqrt is slow
+	float altSqrt(const float number);
+
 private:
+	//16
 	union
 	{
 		__m128 _m;

@@ -6,16 +6,20 @@
 
 
 Matrix::Matrix()
-	:m0(0.0f), m1(0.0f), m2(0.0f), m3(0.0f),
-	m4(0.0f), m5(0.0f), m6(0.0f), m7(0.0f),
-	m8(0.0f), m9(0.0f), m10(0.0f), m11(0.0f),
-	m12(0.0f), m13(0.0f), m14(0.0f), m15(0.0f) {}
+{
+	this->v0._m = _mm_setzero_ps();
+	this->v1._m = _mm_setzero_ps();
+	this->v2._m = _mm_setzero_ps();
+	this->v3._m = _mm_setzero_ps();
+};
 
-Matrix::Matrix(const Matrix& t)
-	:m0(t.m0), m1(t.m1), m2(t.m2), m3(t.m3),
-	m4(t.m4), m5(t.m5), m6(t.m6), m7(t.m7),
-	m8(t.m8), m9(t.m9), m10(t.m10), m11(t.m11),
-	m12(t.m12), m13(t.m13), m14(t.m14), m15(t.m15) {}
+Matrix::Matrix(const Matrix& m)
+{
+	this->v0._m = _mm_set_ps(m.v0.w, m.v0.z, m.v0.y, m.v0.x);
+	this->v1._m = _mm_set_ps(m.v1.w, m.v1.z, m.v1.y, m.v1.x);
+	this->v2._m = _mm_set_ps(m.v2.w, m.v2.z, m.v2.y, m.v2.x);
+	this->v3._m = _mm_set_ps(m.v3.w, m.v3.z, m.v3.y, m.v3.x);
+}
 
 Matrix::Matrix(const float &m0, const float &m1, const float &m2, const float &m3,
 			   const float &m4, const float &m5, const float &m6, const float &m7,
@@ -29,10 +33,10 @@ Matrix::Matrix(const float &m0, const float &m1, const float &m2, const float &m
 
 Matrix::Matrix(const Vect4D & v0, const Vect4D & v1, const Vect4D & v2, const Vect4D & v3)
 {
-	this->v0 = v0;
-	this->v1 = v1;
-	this->v2 = v2;
-	this->v3 = v3;
+	this->v0._m = v0._m;
+	this->v1._m = v1._m;
+	this->v2._m = v2._m;
+	this->v3._m = v3._m;
 }
 
 
@@ -87,33 +91,33 @@ void Matrix::setTransMatrix(const Vect4D *t)
 	this->m15 = 1.0;
 }
 
-void Matrix::set(const MatrixRowEnum &row, const Vect4D *t )
+void Matrix::set(const short &row, const Vect4D *t )
 {
 	// initialize the rows of the matrix
 	switch( row )
 	{
-	case MATRIX_ROW_0:
+	case 0:
 		this->m0 = t->x;
 		this->m1 = t->y;
 		this->m2 = t->z;
 		this->m3 = t->w;
 		break;
 
-	case MATRIX_ROW_1:
+	case 1:
 		this->m4 = t->x;
 		this->m5 = t->y;
 		this->m6 = t->z;
 		this->m7 = t->w;
 		break;
 
-	case MATRIX_ROW_2:
+	case 2:
 		this->m8 = t->x;
 		this->m9 = t->y;
 		this->m10 = t->z;
 		this->m11 = t->w;
 		break;
 
-	case MATRIX_ROW_3:
+	case 3:
 		this->m12 = t->x;
 		this->m13 = t->y;
 		this->m14 = t->z;
@@ -187,32 +191,32 @@ float &Matrix::operator[](const INDEX_ENUM &e)
 }
 
 
-void Matrix::get(const MatrixRowEnum &row, Vect4D *t )
+void Matrix::get(const short &row, Vect4D *t )
 { // get a row of the matrix
 	switch( row )
 	{
-	case MATRIX_ROW_0:
+	case 0:
 		t->x = this->m0;
 		t->y = this->m1;
 		t->z = this->m2;
 		t->w = this->m3;
 		break;
 
-	case MATRIX_ROW_1:
+	case 1:
 		t->x = this->m4;
 		t->y = this->m5;
 		t->z = this->m6;
 		t->w = this->m7;
 		break;
 
-	case MATRIX_ROW_2:
+	case 2:
 		t->x = this->m8;
 		t->y = this->m9;
 		t->z = this->m10;
 		t->w = this->m11;
 		break;
 
-	case MATRIX_ROW_3:
+	case 3:
 		t->x = this->m12;
 		t->y = this->m13;
 		t->z = this->m14;
@@ -225,31 +229,66 @@ void Matrix::get(const MatrixRowEnum &row, Vect4D *t )
 }
 
 
-Matrix Matrix::operator*( Matrix& rhs) 
+Matrix Matrix::operator*(const Matrix& m) 
 { // matrix multiplications
-	Matrix tmp;
-	
-	tmp.m0 = (m0*rhs.m0) + (m1*rhs.m4) + (m2*rhs.m8) + (m3*rhs.m12);
-	tmp.m1 = (m0*rhs.m1) + (m1*rhs.m5) + (m2*rhs.m9) + (m3*rhs.m13);
-	tmp.m2 = (m0*rhs.m2) + (m1*rhs.m6) + (m2*rhs.m10) + (m3*rhs.m14);
-	tmp.m3 = (m0*rhs.m3) + (m1*rhs.m7) + (m2*rhs.m11) + (m3*rhs.m15);
-	
-	tmp.m4 = (m4*rhs.m0) + (m5*rhs.m4) + (m6*rhs.m8) + (m7*rhs.m12);
-	tmp.m5 = (m4*rhs.m1) + (m5*rhs.m5) + (m6*rhs.m9) + (m7*rhs.m13);
-	tmp.m6 = (m4*rhs.m2) + (m5*rhs.m6) + (m6*rhs.m10) + (m7*rhs.m14);
-	tmp.m7 = (m4*rhs.m3) + (m5*rhs.m7) + (m6*rhs.m11) + (m7*rhs.m15);
-	
-	tmp.m8 = (m8*rhs.m0) + (m9*rhs.m4) + (m10*rhs.m8) + (m11*rhs.m12);
-	tmp.m9 = (m8*rhs.m1) + (m9*rhs.m5) + (m10*rhs.m9) + (m11*rhs.m13);
-	tmp.m10 = (m8*rhs.m2) + (m9*rhs.m6) + (m10*rhs.m10) + (m11*rhs.m14);
-	tmp.m11 = (m8*rhs.m3) + (m9*rhs.m7) + (m10*rhs.m11) + (m11*rhs.m15);
-	
-	tmp.m12 = (m12*rhs.m0) + (m13*rhs.m4) + (m14*rhs.m8) + (m15*rhs.m12);
-	tmp.m13 = (m12*rhs.m1) + (m13*rhs.m5) + (m14*rhs.m9) + (m15*rhs.m13);
-	tmp.m14 = (m12*rhs.m2) + (m13*rhs.m6) + (m14*rhs.m10) + (m15*rhs.m14);
-	tmp.m15 = (m12*rhs.m3) + (m13*rhs.m7) + (m14 *rhs.m11) + (m15*rhs.m15);
+	return Matrix
+	(
+		_mm_add_ps
+		(
+			_mm_add_ps
+			(
+				_mm_mul_ps(_mm_set_ps1(this->v0.x), m.v0._m),
+				_mm_mul_ps(_mm_set_ps1(this->v0.y), m.v1._m)
+			),
+			_mm_add_ps
+			(
+				_mm_mul_ps(_mm_set_ps1(this->v0.z), m.v2._m),
+				_mm_mul_ps(_mm_set_ps1(this->v0.w), m.v3._m)
+			)
+		),
 
-	return tmp;
+		_mm_add_ps
+		(
+			_mm_add_ps
+			(
+				_mm_mul_ps(_mm_set_ps1(this->v1.x), m.v0._m),
+				_mm_mul_ps(_mm_set_ps1(this->v1.y), m.v1._m)
+			),
+			_mm_add_ps
+			(
+				_mm_mul_ps(_mm_set_ps1(this->v1.z), m.v2._m),
+				_mm_mul_ps(_mm_set_ps1(this->v1.w), m.v3._m)
+			)
+		),
+
+		_mm_add_ps
+		(
+			_mm_add_ps
+			(
+				_mm_mul_ps(_mm_set_ps1(this->v2.x), m.v0._m),
+				_mm_mul_ps(_mm_set_ps1(this->v2.y), m.v1._m)
+			),
+			_mm_add_ps
+			(
+				_mm_mul_ps(_mm_set_ps1(this->v2.z), m.v2._m),
+				_mm_mul_ps(_mm_set_ps1(this->v2.w), m.v3._m)
+			)
+		),
+
+		_mm_add_ps
+		(
+			_mm_add_ps
+			(
+				_mm_mul_ps(_mm_set_ps1(this->v3.x), m.v0._m),
+				_mm_mul_ps(_mm_set_ps1(this->v3.y), m.v1._m)
+			),
+			_mm_add_ps
+			(
+				_mm_mul_ps(_mm_set_ps1(this->v3.z), m.v2._m),
+				_mm_mul_ps(_mm_set_ps1(this->v3.w), m.v3._m)
+			)
+		)
+	);
 }
 
 //Matrix Matrix::operator*(float s)
@@ -505,19 +544,17 @@ Matrix Matrix::GetAdjugate()
 
 void Matrix::Inverse( Matrix &out ) 
 {
-	Matrix tmp;
 	float det = Determinant();
-	if(fabs(det) < 0.0001)
-	{
-		// do nothing, Matrix is not invertable
-	}
-	else
-	{
-		tmp = GetAdjugate();
-		tmp /= det;
-	}
 
-	out = tmp;
+	if (det < 0)
+		det = -det;
+
+	//got rid of abs because most of math is slow
+	if (det < 0.0001) {}
+	// do nothing, Matrix is not invertable
+
+	else
+		out = Matrix(GetAdjugate() /= det);
 }
 
 void Matrix::setScaleMatrix(const Vect4D *scale)
@@ -527,26 +564,11 @@ void Matrix::setScaleMatrix(const Vect4D *scale)
 	//	{	0		0		sz		0	}
 	//	{	0		0		0		1	}
 	
-	Matrix tmp;
-	this->m0 = scale->x;
-	this->m1 = 0;
-	this->m2 = 0;
-	this->m3 = 0;
-	
-	this->m4 = 0;
-	this->m5 = scale->y;
-	this->m6 = 0;
-	this->m7 = 0;
-	
-	this->m8 = 0;
-	this->m9 = 0;
-	this->m10 = scale->z;
-	this->m11 = 0;
-	
-	this->m12 = 0;
-	this->m13 = 0;
-	this->m14 = 0;
-	this->m15 = 1.0;
+	*this = Matrix(
+		scale->x, 0, 0, 0,
+		0, scale->y, 0, 0,
+		0, 0, scale->z, 0,
+		0, 0, 0, 1.0);
 }
 
 void Matrix::setRotZMatrix(const float &az)
@@ -556,28 +578,11 @@ void Matrix::setRotZMatrix(const float &az)
 	//	{	0		0		1		0	}
 	//	{	0		0		0		1	}
 	
-	Matrix tmp;
-	tmp.m0 = cosf(az);
-	tmp.m1 = -sinf(az);
-	tmp.m2 = 0;
-	tmp.m3 = 0;
-	
-	tmp.m4 = sinf(az);
-	tmp.m5 = cosf(az);
-	tmp.m6 = 0;
-	tmp.m7 = 0;
-	
-	tmp.m8 = 0;
-	tmp.m9 = 0;
-	tmp.m10 = 1;
-	tmp.m11 = 0;
-	
-	tmp.m12 = 0;
-	tmp.m13 = 0;
-	tmp.m14 = 0;
-	tmp.m15 = 1;
-	
-	*this = tmp;
+	*this = Matrix(
+		cosf(az), -sinf(az), 0, 0,
+		sinf(az), cosf(az), 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1);
 }
 
 // End of file

@@ -24,10 +24,10 @@ Vect4D::Vect4D(const __m128 &_m)
 	this->_m = _m;
 }
 
-void Vect4D::norm(Vect4D& out) const
+void Vect4D::norm(Vect4D& out) 
 {
-	//THIS WILL NEED TO BE CHANGED TO AVOID SQUARE ROOT
-	float mag = sqrtf( this->x * this->x + this->y * this->y + this->z * this->z );
+	//alternative square root method 
+	float mag = altSqrt( this->x * this->x + this->y * this->y + this->z * this->z );
 
 	if( 0.0f < mag )
 	{
@@ -92,4 +92,19 @@ void Vect4D::set(const float &tx, const float &ty, const float &tz, const float 
 	this->_m = _mm_set_ps(tw, tz, ty, tx);
 }
 
-// End of file
+float Vect4D::altSqrt(const float num)
+{
+	union
+	{
+		int i;
+		float x;
+	} u;
+
+	u.x = num;
+	u.i = (1 << 29) + (u.i >> 1) - (1 << 22);
+
+	u.x = u.x + num / u.x;
+	u.x = 0.25f*u.x + num / u.x;
+
+	return u.x;
+}
