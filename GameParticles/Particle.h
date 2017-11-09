@@ -16,6 +16,7 @@ public:
 
 	//needed for 16 byte alignment and simd
 	void* operator new(size_t i);
+	void* operator new[](size_t i);
 	void operator delete(void* p);
 
 private: //272

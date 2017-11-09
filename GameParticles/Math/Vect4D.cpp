@@ -57,7 +57,7 @@ Vect4D Vect4D::operator *(const float &scale) const
 	return Vect4D(_mm_mul_ps(this->_m, _mm_set_ps1(scale)));
 }
 
-float& Vect4D::operator[](const VECT_ENUM &e )
+float& Vect4D::operator[](const char &e )
 {
 	switch(e)
 	{

@@ -91,7 +91,7 @@ void Matrix::setTransMatrix(const Vect4D *t)
 	this->m15 = 1.0;
 }
 
-void Matrix::set(const short &row, const Vect4D *t )
+void Matrix::set(const char &row, const Vect4D *t )
 {
 	// initialize the rows of the matrix
 	switch( row )
@@ -130,7 +130,7 @@ void Matrix::set(const short &row, const Vect4D *t )
 	}
 }
 
-float &Matrix::operator[](const INDEX_ENUM &e)
+float &Matrix::operator[](const short &e)
 {
 	// get the individual elements
 	switch(e)
@@ -191,7 +191,7 @@ float &Matrix::operator[](const INDEX_ENUM &e)
 }
 
 
-void Matrix::get(const short &row, Vect4D *t )
+void Matrix::get(const char &row, Vect4D *t )
 { // get a row of the matrix
 	switch( row )
 	{

@@ -35,7 +35,7 @@ public:
 
 	void Cross(const Vect4D &vin, Vect4D &vout) const;
 
-	float &operator[](const VECT_ENUM &e);
+	float &operator[](const char &e);
 
 	//faster square root because math.sqrt is slow
 	float altSqrt(const float number);

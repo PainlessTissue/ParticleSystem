@@ -130,7 +130,6 @@ int main()
 			printf("\nLoopTime: update:%f ms  draw:%f ms  tot:%f\n",updateTime * 1000.0f, drawTime * 1000.0f, (updateTime + drawTime) *1000.0f);
 			
 			//printf("Size of Particle %i Size of Particle Emitter %i Sizeof Matrix %i Size of Vect %i", sizeof(Particle), sizeof(ParticleEmitter), sizeof(Matrix), sizeof(Vect4D));
-
 		}
 	}
 	

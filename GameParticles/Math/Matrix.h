@@ -30,17 +30,16 @@ public:
 
 	~Matrix();
 
-	//my reasoning for changing this to short is because it is the lowest byte size
-	//possible for storing integer values, and are we only going to 3
-	void set(const short &row, const Vect4D *t );
-	void get(const short &row, Vect4D *vOut );
+	//my reasoning for changing this to shoort is because it is the lowest byte size
+	void set(const char &row, const Vect4D *t );
+	void get(const char &row, Vect4D *vOut );
 
 	void setIdentMatrix();
 	void setTransMatrix(const Vect4D *t );
 	void setScaleMatrix(const Vect4D *s );
 	void setRotZMatrix(const float &Z_Radians );
 
-	float &operator[](const INDEX_ENUM &e);
+	float &operator[](const short &e);
 	
 	Matrix operator*(const Matrix &t );
 	//Matrix operator*( float s );

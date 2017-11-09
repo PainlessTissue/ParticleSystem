@@ -1,7 +1,7 @@
 #ifndef ENUM_H
 #define ENUM_H
 
-
+/*
 enum VECT_ENUM
 {
 	x = 0,
@@ -9,7 +9,8 @@ enum VECT_ENUM
 	z = 2,
 	w = 3
 };
-
+*/
+/*
 enum INDEX_ENUM  // used for matrices
 {
 	m0 = 0,
@@ -29,6 +30,6 @@ enum INDEX_ENUM  // used for matrices
 	m14 = 14,
 	m15 = 15
 };
-
+*/
 
 #endif  // enum.h

@@ -36,13 +36,15 @@ ParticleEmitter::ParticleEmitter()
 	spawn_frequency( 0.0000001f ),	
 	last_spawn( globalTimer::getTimerInSec() ),
 	last_loop(  globalTimer::getTimerInSec() ),
-	headParticle(0),
+	//headParticle(0),
 	vel_variance( 1.0f, 4.0f, 0.4f ),
 	pos_variance( 1.0f, 1.0f, 1.0f ),
 	scale_variance(2.5f),
 	particle_list( NUM_PARTICLES )
 {
-	// nothing to do
+	//particle_list = new LL[NUM_PARTICLES];
+	headParticle = new Particle[NUM_PARTICLES];
+	
 }
 
 
@@ -60,8 +62,8 @@ void ParticleEmitter::SpawnParticle()
 	{
 	
 		// create new particle
-		Particle *newParticle = new Particle();
-
+		Particle *newParticle = (headParticle + last_active_particle);
+		
 		// initialize the particle
 		newParticle->life     = 0.0f;
 		newParticle->position = start_position;
@@ -119,7 +121,7 @@ void ParticleEmitter::update()
 			Particle *s = p;
 
 			// need to squirrel it away.
-			p=p->next;
+			p = p->next;
 
 			// remove last node
 			this->removeParticleFromList( s );
@@ -137,7 +139,7 @@ void ParticleEmitter::update()
 
 	//move a copy to vector for faster iterations in draw
 	p = this->headParticle;
-	//bufferCount = 0;
+	bufferCount = 0;
 
 	// clear the buffer
 	drawBuffer.clear();
@@ -152,11 +154,11 @@ void ParticleEmitter::update()
 		p = p->next;
 
 		// track the current count
-		//bufferCount++;
+		bufferCount++;
 	}
 
 	// make sure the counts track (asserts go away in release - relax Christos)
-	//assert(bufferCount == (last_active_particle+1));
+	assert(bufferCount == (last_active_particle+1));
 	last_loop = current_time;
 }
 	   
@@ -306,7 +308,7 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	float var = static_cast<float>(rand() % 1000) * 0.001f;
 	float sign = static_cast<float>(rand() % 2);
 	float *t_pos = reinterpret_cast<float*>(&pos);
-	float *t_var = &pos_variance[x];
+	float *t_var = &pos_variance[0];
 	if(sign == 0)
 	{
 		var *= -1.0;
@@ -339,8 +341,8 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	sign = static_cast<float>(rand() % 2);
 	
 	// x  - add velocity
-	t_pos = &vel[x];
-	t_var = &vel_variance[x];
+	t_pos = &vel[0];
+	t_var = &vel_variance[0];
 	if(sign == 0)
 	{
 		var *= -1.0;
