@@ -32,32 +32,13 @@ void Particle::Update(float const & time_elapsed)
 {
 	// Rotate the matrices
 	
-	//THESE MAY BE UNNCESSARY. COMPARE
+	//Matrix tmp(
+	//	this->diff_Row0,
+	//	this->diff_Row1,
+	//	this->diff_Row2,
+	//	this->diff_Row3);
 
-	//Vect4D tmp_Row0 = this->curr_Row0;
-	//this->prev_Row0 = tmp_Row0;
-
-	//Vect4D tmp_Row1 = this->curr_Row1
-	//this->prev_Row1 = tmp_Row1;
-
-	//Vect4D tmp_Row2 = this->curr_Row2
-	//this->prev_Row2 = tmp_Row2;
-
-	//Vect4D tmp_Row3 = this->curr_Row3
-	//this->prev_Row3 = tmp_Row3;
-
-	Matrix tmp(
-		this->diff_Row0,
-		this->diff_Row1,
-		this->diff_Row2,
-		this->diff_Row3);
-
-	//tmp.set(0, &this->diff_Row0);
-	//tmp.set(1, &this->diff_Row1);
-	//tmp.set(2, &this->diff_Row2);
-	//tmp.set(3, &this->diff_Row3);
-
-	float MatrixScale = tmp.Determinant();
+	//float MatrixScale = tmp.Determinant();
 
 	// serious math below - magic secret sauce
 	life += time_elapsed;
@@ -68,12 +49,12 @@ void Particle::Update(float const & time_elapsed)
 	v.norm(v);
 	position = position + v * 0.05f * life;
 
-	if( MatrixScale > 1.0f )
-	{
-		MatrixScale = 1.0f/MatrixScale;
-	};
+	//if( MatrixScale > 1.0f )
+	//{
+	//	MatrixScale = 1.0f/MatrixScale;
+	//};
 
-	rotation = rotation + MatrixScale + rotation_velocity * time_elapsed *2.01f;
+	rotation = rotation /*+ MatrixScale */+ rotation_velocity * time_elapsed *2.01f;
 }
 
 void * Particle::operator new(size_t i)

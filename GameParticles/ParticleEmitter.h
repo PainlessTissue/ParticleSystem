@@ -29,24 +29,16 @@ public:
 
 
 private:
-	//128
-	Vect4D	start_position;
-	Vect4D	start_velocity;
+	//64
 
-	float	max_life;
-	int		max_particles;
 	int		last_active_particle;
 	float	spawn_frequency;
 	float	last_spawn;
 	float	last_loop;
-
-
-	// added for speed efficiency
-	int bufferCount;
 	Particle *headParticle;
+
 	Vect4D	vel_variance;
 	Vect4D	pos_variance;
-	float	scale_variance;
 };
 
 #endif // PARTICLEEMITTER_H

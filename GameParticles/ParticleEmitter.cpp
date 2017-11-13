@@ -28,18 +28,13 @@ static const float squareVertices[] =
 
 
 ParticleEmitter::ParticleEmitter()
-:	start_position( 0.0f, 0.0f, 0.0f ),
-	start_velocity( 0.0f, 1.0f, 0.0f), 
-	max_life(MAX_LIFE),
-	max_particles(NUM_PARTICLES),
-	last_active_particle(-1),
+:	last_active_particle(-1),
 	spawn_frequency( 0.0000001f ),	
 	last_spawn( globalTimer::getTimerInSec() ),
 	last_loop(  globalTimer::getTimerInSec() ),
 	headParticle(0),
 	vel_variance( 1.0f, 4.0f, 0.4f ),
-	pos_variance( 1.0f, 1.0f, 1.0f ),
-	scale_variance(2.5f)
+	pos_variance( 1.0f, 1.0f, 1.0f )
 {
 	//headParticle = new Particle[NUM_PARTICLES];
 }
@@ -55,15 +50,11 @@ ParticleEmitter::~ParticleEmitter()
 void ParticleEmitter::SpawnParticle()
 {
 	// create another particle if there are ones free
-	if( last_active_particle < max_particles-1 )
+	if( last_active_particle < NUM_PARTICLES-1 )
 	{
 	
 		// create new particle
 		Particle *newParticle = new Particle();// (headParticle + last_active_particle);
-		
-		// initialize the particle
-		newParticle->position = start_position;
-		newParticle->velocity = start_velocity;
 
 		// apply the variance
 		this->Execute(newParticle->position, newParticle->velocity, newParticle->scale);
@@ -110,7 +101,7 @@ void ParticleEmitter::update()
 		// if it's live is greater that the max_life 
 		// and there is some on the list
 		// remove node
-		if((p->life > max_life) && (last_active_particle > 0))
+		if((p->life > MAX_LIFE) && (last_active_particle > 0))
 		{
 			// particle to remove
 			Particle *s = p;
@@ -234,20 +225,8 @@ void ParticleEmitter::draw() const
 		// set the transformation matrix
 		glLoadMatrixf(reinterpret_cast<float*>(&(tmp)));
 
-		// squirrel away matrix for next update
-		//tmp.get(0, &it->curr_Row0 );
-		//tmp.get(1, &it->curr_Row1 );
-		//tmp.get(2, &it->curr_Row2 );
-		//tmp.get(3, &it->curr_Row3 );
-
 		// draw the trangle strip
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-		// difference vector
-		//it->diff_Row0 = it->curr_Row0 - it->prev_Row0;
-		//it->diff_Row1 = it->curr_Row1 - it->prev_Row1;
-		//it->diff_Row2 = it->curr_Row2 - it->prev_Row2;
-		//it->diff_Row3 = it->curr_Row3 - it->prev_Row3;
 
 		
 		// clears or flushes some internal setting, used in debug, but is need for performance reasons
