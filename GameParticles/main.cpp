@@ -56,8 +56,7 @@ int main()
 
 		// setup the translation matrix
 		Matrix TransMatrix;
-		Vect4D Trans(0.0f, 3.0f, 10.0f);
-		TransMatrix.setTransMatrix( &Trans );
+		TransMatrix.setTransMatrix(Vect4D(0.0f, 3.0f, 10.0f));
 
 		// multiply them together
 		Matrix tmp(CameraMatrix * TransMatrix);
@@ -77,8 +76,7 @@ int main()
 
 			// setup the translation matrix
 			Matrix transMatrix;
-			Vect4D trans(0.0f, 3.0f, 10.0f);
-			transMatrix.setTransMatrix( &trans );
+			transMatrix.setTransMatrix(Vect4D(0.0f, 3.0f, 10.0f));
 
 			// multiply them together
 			tmp = cameraMatrix * transMatrix;

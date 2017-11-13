@@ -34,7 +34,7 @@ void Vect4D::norm(Vect4D& out)
 		out.x = this->x / mag;
 		out.y = this->y / mag;
 		out.z = this->z / mag;
-		out.w = 1.0;
+		out.w = 1.0f;
 	}
 }
 
@@ -45,21 +45,22 @@ Vect4D Vect4D::operator + (const Vect4D &t) const
 
 Vect4D Vect4D::operator - (const Vect4D &t) const
 {
-	return Vect4D(this->x - t.x, this->y - t.y, this->z - t.z, this->w - t.w);
+	//return Vect4D(this->x - t.x, this->y - t.y, this->z - t.z, this->w - t.w);
 	//__m128 d = _mm_sub_ps(this->_m, t._m);
 	//return Vect4D(d);
-	//return Vect4D(_mm_sub_ps(this->_m, t._m));
+	return Vect4D(_mm_sub_ps(this->_m, t._m)); //this is working now... but i dont know why
 }
 
 Vect4D Vect4D::operator *(const float &scale) const
 {
-	//return Vect4D(this->x * scale, this->y * scale, this->z * scale);
 	return Vect4D(_mm_mul_ps(this->_m, _mm_set_ps1(scale)));
 }
 
 Vect4D Vect4D::operator*=(const float & scale)
 {
-	return Vect4D(_mm_mul_ps(this->_m, _mm_set_ps1(scale)));
+	this->_m = (_mm_mul_ps(this->_m, _mm_set_ps1(scale)));
+
+	return *this;
 }
 
 float& Vect4D::operator[](const char &e )
@@ -113,3 +114,23 @@ float Vect4D::altSqrt(const float &num) const
 
 	return u.x;
 }
+
+//void * Vect4D::operator new(const size_t i)
+//{
+//	return _aligned_malloc(i, 16);
+//}
+//
+//void * Vect4D::operator new[](const size_t i)
+//{
+//	return _aligned_malloc(i, 16);
+//}
+//
+//void Vect4D::operator delete(void * p)
+//{
+//	_aligned_free(p);
+//}
+//
+//void Vect4D::operator delete[](void * p)
+//{	
+//	_aligned_free(p);
+//}

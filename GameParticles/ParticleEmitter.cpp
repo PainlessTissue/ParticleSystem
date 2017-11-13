@@ -235,11 +235,11 @@ void ParticleEmitter::draw()
 
 		// camera position
 		Matrix transCamera;
-		transCamera.setTransMatrix( &camPosVect );
+		transCamera.setTransMatrix( camPosVect );
 
 		// particle position
 		Matrix transParticle;
-		transParticle.setTransMatrix( &it->position );
+		transParticle.setTransMatrix( it->position );
 
 		// rotation matrix
 		Matrix rotParticle;
@@ -247,10 +247,9 @@ void ParticleEmitter::draw()
 
 		// pivot Point
 		Matrix pivotParticle;
-		Vect4D pivotVect;
-		pivotVect.set(1.0f, 0.0f, 50.0f);
+		Vect4D pivotVect(1.0f, 0.0f, 50.0f);
 		pivotVect *= 20.0f * it->life;
-		pivotParticle.setTransMatrix( &pivotVect );
+		pivotParticle.setTransMatrix( pivotVect );
 
 		// scale Matrix
 		Matrix scaleMatrix;

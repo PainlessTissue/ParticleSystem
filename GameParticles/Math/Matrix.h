@@ -14,7 +14,7 @@
 class Vect4D;
 
 // class
-class Matrix
+/* __declspec(align(16)) */ class Matrix
 {
 public:
 
@@ -37,7 +37,7 @@ public:
 	void get(const char &row, Vect4D *vOut);
 
 	void setIdentMatrix();
-	void setTransMatrix(const Vect4D *t);
+	void setTransMatrix(const Vect4D &t);
 	void setScaleMatrix(const Vect4D *s);
 	void setRotZMatrix(const float &Z_Radians);
 
@@ -55,7 +55,12 @@ public:
 
 	void Matrix::Inverse(Matrix &out);
 
-	//private:
+	//void* operator new(const size_t i);
+	//void* operator new[](const size_t i);
+	//void operator delete(void* p);
+	//void operator delete[](void *p);
+
+private:
 		//64
 	union
 	{

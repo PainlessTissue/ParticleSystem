@@ -14,7 +14,7 @@
 class Matrix;
 
 // class
-class Vect4D
+/* __declspec(align(16)) */class Vect4D
 {
 public:
 	friend class Matrix;
@@ -41,6 +41,11 @@ public:
 
 	//faster square root because math.sqrt is slow
 	float altSqrt(const float &number) const;
+
+	//void* operator new(const size_t i);
+	//void* operator new[](const size_t i);
+	//void operator delete(void* p);
+	//void operator delete[](void *p);
 
 private:
 	//16

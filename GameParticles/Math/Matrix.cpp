@@ -68,7 +68,7 @@ void Matrix::setIdentMatrix()
 	this->m15 = 1.0f;
 }
 
-void Matrix::setTransMatrix(const Vect4D *t)
+void Matrix::setTransMatrix(const Vect4D &t)
 { // set the translation matrix (note: we are row major)
 	this->m0 = 1.0f;
 	this->m1 = 0.0f;
@@ -85,9 +85,9 @@ void Matrix::setTransMatrix(const Vect4D *t)
 	this->m10 = 1.0f;
 	this->m11 = 0.0f;
 	
-	this->m12 = t->x;
-	this->m13 = t->y;
-	this->m14 = t->z;
+	this->m12 = t.x;
+	this->m13 = t.y;
+	this->m14 = t.z;
 	this->m15 = 1.0f;
 }
 
@@ -553,6 +553,26 @@ void Matrix::Inverse( Matrix &out )
 	else
 		out = Matrix(GetAdjugate() /= det);
 }
+//
+//void * Matrix::operator new(const size_t i)
+//{
+//	return _aligned_malloc(i, 16);
+//}
+//
+//void * Matrix::operator new[](const size_t i)
+//{
+//	return _aligned_malloc(i, 16);
+//}
+//
+//void Matrix::operator delete(void * p)
+//{
+//	_aligned_free(p);
+//}
+//
+//void Matrix::operator delete[](void * p)
+//{	
+//	_aligned_free(p);
+//}
 
 void Matrix::setScaleMatrix(const Vect4D *scale)
 {
