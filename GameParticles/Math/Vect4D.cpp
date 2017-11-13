@@ -57,6 +57,11 @@ Vect4D Vect4D::operator *(const float &scale) const
 	return Vect4D(_mm_mul_ps(this->_m, _mm_set_ps1(scale)));
 }
 
+Vect4D Vect4D::operator*=(const float & scale)
+{
+	return Vect4D(_mm_mul_ps(this->_m, _mm_set_ps1(scale)));
+}
+
 float& Vect4D::operator[](const char &e )
 {
 	switch(e)
@@ -92,7 +97,7 @@ void Vect4D::set(const float &tx, const float &ty, const float &tz, const float 
 	this->_m = _mm_set_ps(tw, tz, ty, tx);
 }
 
-float Vect4D::altSqrt(const float num)
+float Vect4D::altSqrt(const float &num) const
 {
 	union
 	{

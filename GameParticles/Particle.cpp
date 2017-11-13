@@ -28,19 +28,24 @@ void Particle::CopyDataOnly(const Particle *p )
 	this->life     = p->life;
 }
 
-void * Particle::operator new(size_t i)
+void * Particle::operator new(const size_t i)
 {
-	return _mm_malloc(i, 16);
+	return _aligned_malloc(i, 16);
 }
 
-void* Particle::operator new[](size_t i)
+void* Particle::operator new[](const size_t i)
 {
-	return _mm_malloc(i, 16);
+	return _aligned_malloc(i, 16);
 }
 
 void Particle::operator delete(void * p)
 {
-	_mm_free(p);
+	_aligned_free(p);
+}
+
+void Particle::operator delete[](void *p)
+{
+	_aligned_free(p);
 }
 
 void Particle::Update(const float& time_elapsed)
@@ -75,7 +80,7 @@ void Particle::Update(const float& time_elapsed)
 	life += time_elapsed;
 	position = position + (velocity * time_elapsed);
 	Vect4D z_axis(0.0f, -0.25f, 1.0f);
-	Vect4D v(3,4,0);
+	Vect4D v(3, 4, 0);
 	position.Cross( z_axis, v);
 	v.norm(v);
 	position = position + v * 0.05f * life;

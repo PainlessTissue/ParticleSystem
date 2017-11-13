@@ -7,30 +7,6 @@
 
 #include <list>
 
-struct LL
-{
-	LL()
-	{
-
-	}
-
-	virtual ~LL()
-	{
-
-	}
-
-	void clear()
-	{
-
-	}
-
-
-	Particle *particle;
-	LL *next;
-	LL *prev;
-
-};
-
 class ParticleEmitter
 {
 public:
@@ -65,12 +41,7 @@ private:
 	Vect4D	vel_variance;
 	Vect4D	pos_variance;
 	float	scale_variance;
-
-	//my attempt to get rid of any stl
-//	LL *head;
-//	LL *tail;
-//	LL *drawBuffer;
-//	LL *particle_list;
+	
 	std::list<Particle> drawBuffer;
 	std::list<Particle> particle_list;
 };

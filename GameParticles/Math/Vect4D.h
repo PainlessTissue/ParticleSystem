@@ -33,12 +33,14 @@ public:
 	Vect4D operator - (const Vect4D &t) const;
 	Vect4D operator * (const float &scale) const;
 
+	Vect4D operator *= (const float &f);
+
 	void Cross(const Vect4D &vin, Vect4D &vout) const;
 
 	float &operator[](const char &e);
 
 	//faster square root because math.sqrt is slow
-	float altSqrt(const float number);
+	float altSqrt(const float &number) const;
 
 private:
 	//16

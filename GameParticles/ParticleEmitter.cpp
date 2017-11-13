@@ -36,14 +36,13 @@ ParticleEmitter::ParticleEmitter()
 	spawn_frequency( 0.0000001f ),	
 	last_spawn( globalTimer::getTimerInSec() ),
 	last_loop(  globalTimer::getTimerInSec() ),
-	//headParticle(0),
+	headParticle(0),
 	vel_variance( 1.0f, 4.0f, 0.4f ),
 	pos_variance( 1.0f, 1.0f, 1.0f ),
 	scale_variance(2.5f),
 	particle_list( NUM_PARTICLES )
 {
-	//particle_list = new LL[NUM_PARTICLES];
-	headParticle = new Particle[NUM_PARTICLES];
+	//headParticle = new Particle[NUM_PARTICLES];
 	
 }
 
@@ -62,7 +61,7 @@ void ParticleEmitter::SpawnParticle()
 	{
 	
 		// create new particle
-		Particle *newParticle = (headParticle + last_active_particle);
+		Particle *newParticle = new Particle();// (headParticle + last_active_particle);
 		
 		// initialize the particle
 		newParticle->life     = 0.0f;
@@ -143,6 +142,7 @@ void ParticleEmitter::update()
 
 	// clear the buffer
 	drawBuffer.clear();
+	
 
 	// walk the pointers, add to list
 	while(p != 0)
@@ -220,11 +220,9 @@ void ParticleEmitter::draw()
 
 	// iterate throught the list of particles
 	std::list<Particle>::iterator it;
-	for( it = drawBuffer.begin(); it != drawBuffer.end(); ++it)
-	{
-		//Temporary matrix
-		Matrix tmp;
 
+	for(it = drawBuffer.begin(); it != drawBuffer.end(); ++it)
+	{
 		// get the position from this matrix
 		Vect4D camPosVect;
 		cameraMatrix.get(3, &camPosVect );
@@ -250,8 +248,8 @@ void ParticleEmitter::draw()
 		// pivot Point
 		Matrix pivotParticle;
 		Vect4D pivotVect;
-		pivotVect.set(1.0, 0.0, 50.0);
-		pivotVect = pivotVect * 20.0 * it->life;
+		pivotVect.set(1.0f, 0.0f, 50.0f);
+		pivotVect *= 20.0f * it->life;
 		pivotParticle.setTransMatrix( &pivotVect );
 
 		// scale Matrix
@@ -259,25 +257,25 @@ void ParticleEmitter::draw()
 		scaleMatrix.setScaleMatrix( &it->scale );
 
 		// total transformation of particle
-		tmp = scaleMatrix * transCamera * transParticle * rotParticle * scaleMatrix;
+		Matrix tmp = scaleMatrix * transCamera * transParticle * rotParticle * scaleMatrix;
 
 		// set the transformation matrix
 		glLoadMatrixf(reinterpret_cast<float*>(&(tmp)));
 
 		// squirrel away matrix for next update
-		tmp.get(0, &it->curr_Row0 );
-		tmp.get(1, &it->curr_Row1 );
-		tmp.get(2, &it->curr_Row2 );
-		tmp.get(3, &it->curr_Row3 );
+		//tmp.get(0, &it->curr_Row0 );
+		//tmp.get(1, &it->curr_Row1 );
+		//tmp.get(2, &it->curr_Row2 );
+		//tmp.get(3, &it->curr_Row3 );
 
 		// draw the trangle strip
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 		// difference vector
-		it->diff_Row0 = it->curr_Row0 - it->prev_Row0;
-		it->diff_Row1 = it->curr_Row1 - it->prev_Row1;
-		it->diff_Row2 = it->curr_Row2 - it->prev_Row2;
-		it->diff_Row3 = it->curr_Row3 - it->prev_Row3;
+		//it->diff_Row0 = it->curr_Row0 - it->prev_Row0;
+		//it->diff_Row1 = it->curr_Row1 - it->prev_Row1;
+		//it->diff_Row2 = it->curr_Row2 - it->prev_Row2;
+		//it->diff_Row3 = it->curr_Row3 - it->prev_Row3;
 
 		
 		// clears or flushes some internal setting, used in debug, but is need for performance reasons
@@ -306,78 +304,71 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	
 	// x - variance
 	float var = static_cast<float>(rand() % 1000) * 0.001f;
-	float sign = static_cast<float>(rand() % 2);
 	float *t_pos = reinterpret_cast<float*>(&pos);
 	float *t_var = &pos_variance[0];
-	if(sign == 0)
+	if(static_cast<float>(rand() % 2) == 0)
 	{
-		var *= -1.0;
+		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
 
 	// y - variance
 	var = static_cast<float>(rand() % 1000) * 0.001f;
-	sign = static_cast<float>(rand() % 2);
 	t_pos++;
 	t_var++;
-	if(sign == 0)
+	if(static_cast<float>(rand() % 2) == 0)
 	{
-		var *= -1.0;
+		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
 	
 	// z - variance
 	var = static_cast<float>(rand() % 1000) * 0.001f;
-	sign = static_cast<float>(rand() % 2);
 	t_pos++;
 	t_var++;
-	if(sign == 0)
+	if(static_cast<float>(rand() % 2) == 0)
 	{
-		var *= -1.0;
+		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
 	
 	var = static_cast<float>(rand() % 1000) * 0.001f;
-	sign = static_cast<float>(rand() % 2);
 	
 	// x  - add velocity
 	t_pos = &vel[0];
 	t_var = &vel_variance[0];
-	if(sign == 0)
+	if(static_cast<float>(rand() % 2) == 0)
 	{
-		var *= -1.0;
+		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
 	
 	// y - add velocity
 	var = static_cast<float>(rand() % 1000) * 0.001f;
-	sign = static_cast<float>(rand() % 2);
 	t_pos++;
 	t_var++;
-	if(sign == 0)
+	if(static_cast<float>(rand() % 2) == 0)
 	{
-		var *= -1.0;
+		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
 	
 	// z - add velocity
 	var = static_cast<float>(rand() % 1000) * 0.001f;
-	sign = static_cast<float>(rand() % 2);
 	t_pos++;
 	t_var++;
-	if(sign == 0)
+	if(static_cast<float>(rand() % 2) == 0)
 	{
-		var *= -1.0;
+		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
 	
 	// correct the sign
 	var = 2.0f * static_cast<float>(rand() % 1000) * 0.001f;
-	sign = static_cast<float>(rand() % 2);
 	
-	if(sign == 0)
+	if(static_cast<float>(rand() % 2) == 0)
 	{
-		var *= -1.0;
+		var *= -1.0f;
 	}
 	sc = sc * var;
 }

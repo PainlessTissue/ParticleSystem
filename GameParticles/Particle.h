@@ -15,9 +15,10 @@ public:
 	void CopyDataOnly(const Particle *p );
 
 	//needed for 16 byte alignment and simd
-	void* operator new(size_t i);
-	void* operator new[](size_t i);
+	void* operator new(const size_t i);
+	void* operator new[](const size_t i);
 	void operator delete(void* p);
+	void operator delete[](void *p);
 
 private: //272
 	Particle *next;

@@ -56,7 +56,7 @@ int main()
 
 		// setup the translation matrix
 		Matrix TransMatrix;
-		Vect4D Trans(0.0f,3.0f,10.0f);
+		Vect4D Trans(0.0f, 3.0f, 10.0f);
 		TransMatrix.setTransMatrix( &Trans );
 
 		// multiply them together
@@ -77,7 +77,7 @@ int main()
 
 			// setup the translation matrix
 			Matrix transMatrix;
-			Vect4D trans(0.0f,3.0f,10.0f);
+			Vect4D trans(0.0f, 3.0f, 10.0f);
 			transMatrix.setTransMatrix( &trans );
 
 			// multiply them together
@@ -130,6 +130,7 @@ int main()
 			printf("\nLoopTime: update:%f ms  draw:%f ms  tot:%f\n",updateTime * 1000.0f, drawTime * 1000.0f, (updateTime + drawTime) *1000.0f);
 			
 			//printf("Size of Particle %i Size of Particle Emitter %i Sizeof Matrix %i Size of Vect %i", sizeof(Particle), sizeof(ParticleEmitter), sizeof(Matrix), sizeof(Vect4D));
+			//printf("sizeof %i" , sizeof(emitter.drew));
 		}
 	}
 	

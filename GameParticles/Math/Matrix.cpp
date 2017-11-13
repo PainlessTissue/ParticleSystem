@@ -47,48 +47,48 @@ Matrix::~Matrix()
 
 void Matrix::setIdentMatrix()
 { // initialize to the identity matrix
-	this->m0 = 1.0;
-	this->m1 = 0.0;
-	this->m2 = 0.0;
-	this->m3 = 0.0;
+	this->m0 = 1.0f;
+	this->m1 = 0.0f;
+	this->m2 = 0.0f;
+	this->m3 = 0.0f;
 
-	this->m4 = 0.0;
-	this->m5 = 1.0;
-	this->m6 = 0.0;
-	this->m7 = 0.0;
+	this->m4 = 0.0f;
+	this->m5 = 1.0f;
+	this->m6 = 0.0f;
+	this->m7 = 0.0f;
 
-	this->m8 = 0.0;
-	this->m9 = 0.0;
-	this->m10 = 1.0;
-	this->m11 = 0.0;
+	this->m8 = 0.0f;
+	this->m9 = 0.0f;
+	this->m10 = 1.0f;
+	this->m11 = 0.0f;
 		
-	this->m12 = 0.0;
-	this->m13 = 0.0;
-	this->m14 = 0.0;
-	this->m15 = 1.0;
+	this->m12 = 0.0f;
+	this->m13 = 0.0f;
+	this->m14 = 0.0f;
+	this->m15 = 1.0f;
 }
 
 void Matrix::setTransMatrix(const Vect4D *t)
 { // set the translation matrix (note: we are row major)
-	this->m0 = 1.0;
-	this->m1 = 0.0;
-	this->m2 = 0.0;
-	this->m3 = 0.0;
+	this->m0 = 1.0f;
+	this->m1 = 0.0f;
+	this->m2 = 0.0f;
+	this->m3 = 0.0f;
 
-	this->m4 = 0.0;
-	this->m5 = 1.0;
-	this->m6 = 0.0;
-	this->m7 = 0.0;
+	this->m4 = 0.0f;
+	this->m5 = 1.0f;
+	this->m6 = 0.0f;
+	this->m7 = 0.0f;
 
-	this->m8 = 0.0;
-	this->m9 = 0.0;
-	this->m10 = 1.0;
-	this->m11 = 0.0;
+	this->m8 = 0.0f;
+	this->m9 = 0.0f;
+	this->m10 = 1.0f;
+	this->m11 = 0.0f;
 	
 	this->m12 = t->x;
 	this->m13 = t->y;
 	this->m14 = t->z;
-	this->m15 = 1.0;
+	this->m15 = 1.0f;
 }
 
 void Matrix::set(const char &row, const Vect4D *t )
@@ -228,7 +228,7 @@ void Matrix::get(const char &row, Vect4D *t )
 	}
 }
 
-
+#if !PROXY
 Matrix Matrix::operator*(const Matrix& m) 
 { // matrix multiplications
 	return Matrix
@@ -291,16 +291,13 @@ Matrix Matrix::operator*(const Matrix& m)
 	);
 }
 
-//Matrix Matrix::operator*(float s)
-//{
-//	return Matrix();
-//}
+#endif
 
 Matrix& Matrix::operator/=(float rhs)
 { 
 	// divide each element by a value
 	// using inverse multiply trick, faster that individual divides
-	float inv_rhs = 1.0f/rhs;
+	const float inv_rhs = 1.0f/rhs;
 
 	m0 *= inv_rhs;
 	m1 *= inv_rhs;
@@ -338,17 +335,17 @@ float Matrix::Determinant()
 	//			- (d (e (kp - lo) - f (jp - ln) + g (jo - kn) ) )
 	
 	// ta = (lq - mp)
-	float ta = (m10 * m15) - (m11 * m14);
+	const float ta = (m10 * m15) - (m11 * m14);
 	// tb = (kq - mo)
-	float tb = (m9 * m15) - (m11 * m13);
+	const float tb = (m9 * m15) - (m11 * m13);
 	// tc = (kp - lo)
-	float tc = (m9 * m14) - (m10 * m13);
+	const float tc = (m9 * m14) - (m10 * m13);
 	// td = (jq - mn)
-	float td = (m8 * m15) - (m11 * m12);
+	const float td = (m8 * m15) - (m11 * m12);
 	// te = (jo - kn)
-	float te = (m8 * m13) - (m9 *  m12);
+	const float te = (m8 * m13) - (m9 *  m12);
 	// tf = (jp - ln)
-	float tf = (m8 * m14) - (m10 * m12);
+	const float tf = (m8 * m14) - (m10 * m12);
 	
 	// det(A) = (a (f*ta  - g*tb + h*tc) )
 	//			- (b (e*ta - g*td + h*tf) )
@@ -546,11 +543,11 @@ void Matrix::Inverse( Matrix &out )
 {
 	float det = Determinant();
 
+	//got rid of abs because most of math is slow
 	if (det < 0)
 		det = -det;
 
-	//got rid of abs because most of math is slow
-	if (det < 0.0001) {}
+	if (det < 0.0001f) {}
 	// do nothing, Matrix is not invertable
 
 	else
