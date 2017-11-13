@@ -115,22 +115,22 @@ float Vect4D::altSqrt(const float &num) const
 	return u.x;
 }
 
-//void * Vect4D::operator new(const size_t i)
-//{
-//	return _aligned_malloc(i, 16);
-//}
-//
-//void * Vect4D::operator new[](const size_t i)
-//{
-//	return _aligned_malloc(i, 16);
-//}
-//
-//void Vect4D::operator delete(void * p)
-//{
-//	_aligned_free(p);
-//}
-//
-//void Vect4D::operator delete[](void * p)
-//{	
-//	_aligned_free(p);
-//}
+void * Vect4D::operator new(const size_t i)
+{
+	return _aligned_malloc(i, 16);
+}
+
+void * Vect4D::operator new[](const size_t i)
+{
+	return _aligned_malloc(i, 16);
+}
+
+void Vect4D::operator delete(void * p)
+{
+	_aligned_free(p);
+}
+
+void Vect4D::operator delete[](void * p)
+{	
+	_aligned_free(p);
+}

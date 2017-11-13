@@ -7,7 +7,7 @@
 
 #include <list>
 
-class ParticleEmitter
+__declspec(align(16)) class ParticleEmitter
 {
 public:
 	ParticleEmitter();
@@ -21,6 +21,12 @@ public:
 	void removeParticleFromList( Particle *p);
 
 	void Execute(Vect4D &pos, Vect4D &vel, Vect4D &sc);
+
+	void* operator new(const size_t i);
+	void* operator new[](const size_t i);
+	void operator delete(void* p);
+	void operator delete[](void *p);
+
 
 private:
 	//128

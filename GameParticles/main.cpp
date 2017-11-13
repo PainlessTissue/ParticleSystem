@@ -46,7 +46,8 @@ int main()
 		assert(success);
 	
 	// create an emitter:-------------------------------
-		ParticleEmitter emitter;
+		//i made the emitter a pointer because its 4 bytes compared to 128
+		ParticleEmitter *emitter = new ParticleEmitter();
 
 	// Get the inverse Camera Matrix:-------------------
 
@@ -95,7 +96,7 @@ int main()
 			glPushMatrix(); // push the camera matrix
 
 			// update the emitter
-			emitter.update();
+			emitter->update();
 
 		// stop update timer: -----------------------------------------
 		updateTimer.toc();
@@ -104,7 +105,7 @@ int main()
 		drawTimer.tic();
 
 			// draw particles
-			emitter.draw();
+			emitter->draw();
 		
 			// pop matrix - needs to correspond to previous push
 			glPopMatrix();
@@ -119,7 +120,7 @@ int main()
 		EventHandler::ProcessEvents();
 
 		// update ouput every 50 times
-		i++;
+		++i;
 		if( i > 25 ) 
 		{
 			i = 0;
@@ -128,10 +129,10 @@ int main()
 			printf("\nLoopTime: update:%f ms  draw:%f ms  tot:%f\n",updateTime * 1000.0f, drawTime * 1000.0f, (updateTime + drawTime) *1000.0f);
 			
 			//printf("Size of Particle %i Size of Particle Emitter %i Sizeof Matrix %i Size of Vect %i", sizeof(Particle), sizeof(ParticleEmitter), sizeof(Matrix), sizeof(Vect4D));
-			//printf("sizeof %i" , sizeof(emitter.drew));
+			//printf("sizeof %i" , sizeof(size_t));
 		}
 	}
-	
+	delete emitter;
     return 0;
 }
 

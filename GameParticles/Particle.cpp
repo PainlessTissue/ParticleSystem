@@ -51,28 +51,31 @@ void Particle::operator delete[](void *p)
 void Particle::Update(const float& time_elapsed)
 {
 	// Rotate the matrices
-	Vect4D tmp_Row0;
-	tmp_Row0 = curr_Row0;
-	prev_Row0 = tmp_Row0;
+	
+	//THESE MAY BE UNNCESSARY. COMPARE
 
-	Vect4D tmp_Row1;
-	tmp_Row1 = curr_Row1;
-	prev_Row1 = tmp_Row1;
+	//Vect4D tmp_Row0 = this->curr_Row0;
+	//this->prev_Row0 = tmp_Row0;
 
-	Vect4D tmp_Row2;
-	tmp_Row2 = curr_Row2;
-	prev_Row2 = tmp_Row2;
+	//Vect4D tmp_Row1 = this->curr_Row1
+	//this->prev_Row1 = tmp_Row1;
 
-	Vect4D tmp_Row3;
-	tmp_Row3 = curr_Row3;
-	prev_Row3 = tmp_Row3;
+	//Vect4D tmp_Row2 = this->curr_Row2
+	//this->prev_Row2 = tmp_Row2;
 
-	Matrix tmp;
+	//Vect4D tmp_Row3 = this->curr_Row3
+	//this->prev_Row3 = tmp_Row3;
 
-	tmp.set(0, &this->diff_Row0);
-	tmp.set(1, &this->diff_Row1);
-	tmp.set(2, &this->diff_Row2);
-	tmp.set(3, &this->diff_Row3);
+	Matrix tmp(
+		this->diff_Row0,
+		this->diff_Row1,
+		this->diff_Row2,
+		this->diff_Row3);
+
+	//tmp.set(0, &this->diff_Row0);
+	//tmp.set(1, &this->diff_Row1);
+	//tmp.set(2, &this->diff_Row2);
+	//tmp.set(3, &this->diff_Row3);
 
 	float MatrixScale = tmp.Determinant();
 

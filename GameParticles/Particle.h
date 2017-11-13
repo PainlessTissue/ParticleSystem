@@ -4,7 +4,7 @@
 // include
 #include "Vect4D.h"
 
-__declspec(align(16)) class Particle
+/*__declspec(align(16))*/ class Particle
 {
 public:
 	friend class ParticleEmitter;
@@ -26,10 +26,12 @@ private: //272
 	float padding1;
 	float padding2;
 
-	Vect4D	prev_Row0;
-	Vect4D	prev_Row1;
-	Vect4D  prev_Row2;
-	Vect4D  prev_Row3;
+	//REMOVAL BECAUSE THEY MAY BE UNNCESSARY. COMPARE
+
+	//Vect4D	prev_Row0;
+	//Vect4D	prev_Row1;
+	//Vect4D  prev_Row2;
+	//Vect4D  prev_Row3;
 
 	Vect4D	position;
 	Vect4D	velocity;
@@ -39,16 +41,16 @@ private: //272
 	Vect4D  diff_Row2;
 	Vect4D  diff_Row3;
 
-	Vect4D	curr_Row0;
-	Vect4D	curr_Row1;
-	Vect4D  curr_Row2;
-	Vect4D  curr_Row3;
+	//Vect4D	curr_Row0;
+	//Vect4D	curr_Row1;
+	//Vect4D  curr_Row2;
+	//Vect4D  curr_Row3;
 
 	//moving these three down moved the size of particle from 304 to 272
 	float	rotation_velocity;
 	float	life;
 	float	rotation;
-	float padding3;
+	float	padding3;
 
 };
 

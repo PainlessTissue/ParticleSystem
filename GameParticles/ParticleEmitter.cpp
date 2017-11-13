@@ -43,7 +43,6 @@ ParticleEmitter::ParticleEmitter()
 	particle_list( NUM_PARTICLES )
 {
 	//headParticle = new Particle[NUM_PARTICLES];
-	
 }
 
 
@@ -64,10 +63,8 @@ void ParticleEmitter::SpawnParticle()
 		Particle *newParticle = new Particle();// (headParticle + last_active_particle);
 		
 		// initialize the particle
-		newParticle->life     = 0.0f;
 		newParticle->position = start_position;
 		newParticle->velocity = start_velocity;
-		newParticle->scale    = Vect4D(1.0f, 1.0f, 1.0f, 1.0f);
 
 		// apply the variance
 		this->Execute(newParticle->position, newParticle->velocity, newParticle->scale);
@@ -106,7 +103,7 @@ void ParticleEmitter::update()
 	Particle *p = this->headParticle;
 	// walk the particles
 
-	while( p!= 0 )
+	while( p != 0 )
 	{
 		// call every particle and update its position 
 		p->Update(time_elapsed);
@@ -158,7 +155,7 @@ void ParticleEmitter::update()
 	}
 
 	// make sure the counts track (asserts go away in release - relax Christos)
-	assert(bufferCount == (last_active_particle+1));
+	assert(bufferCount == (last_active_particle + s1));
 	last_loop = current_time;
 }
 	   
@@ -248,8 +245,7 @@ void ParticleEmitter::draw()
 		// pivot Point
 		Matrix pivotParticle;
 		Vect4D pivotVect(1.0f, 0.0f, 50.0f);
-		pivotVect *= 20.0f * it->life;
-		pivotParticle.setTransMatrix( pivotVect );
+		pivotParticle.setTransMatrix(pivotVect *= 20.0f * it->life);
 
 		// scale Matrix
 		Matrix scaleMatrix;
@@ -284,7 +280,7 @@ void ParticleEmitter::draw()
 	}
 
 	// delete the buffer
-	for( size_t i = 0; i < drawBuffer.size(); i++ )
+	for( size_t i = 0; i < drawBuffer.size(); ++i )
 	{
 		drawBuffer.pop_back();
 	}
@@ -372,6 +368,25 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	sc = sc * var;
 }
 
+void * ParticleEmitter::operator new(const size_t i)
+{
+	return _aligned_malloc(i, 16);
+}
+
+void * ParticleEmitter::operator new[](const size_t i)
+{
+	return _aligned_malloc(i, 16);
+}
+
+void ParticleEmitter::operator delete(void * p)
+{
+	_aligned_free(p);
+}
+
+void ParticleEmitter::operator delete[](void * p)
+{	
+	_aligned_free(p);
+}
 
 
 // End of file
