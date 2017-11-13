@@ -39,8 +39,7 @@ ParticleEmitter::ParticleEmitter()
 	headParticle(0),
 	vel_variance( 1.0f, 4.0f, 0.4f ),
 	pos_variance( 1.0f, 1.0f, 1.0f ),
-	scale_variance(2.5f),
-	particle_list( NUM_PARTICLES )
+	scale_variance(2.5f)
 {
 	//headParticle = new Particle[NUM_PARTICLES];
 }
@@ -135,27 +134,7 @@ void ParticleEmitter::update()
 
 	//move a copy to vector for faster iterations in draw
 	p = this->headParticle;
-	bufferCount = 0;
 
-	// clear the buffer
-	drawBuffer.clear();
-	
-
-	// walk the pointers, add to list
-	while(p != 0)
-	{
-		// add to buffer
-		drawBuffer.push_back(*p);
-
-		// advance ptr
-		p = p->next;
-
-		// track the current count
-		bufferCount++;
-	}
-
-	// make sure the counts track (asserts go away in release - relax Christos)
-	assert(bufferCount == (last_active_particle + s1));
 	last_loop = current_time;
 }
 	   
@@ -216,9 +195,7 @@ void ParticleEmitter::draw()
 	glGetFloatv(GL_MODELVIEW_MATRIX, reinterpret_cast<float*>(&cameraMatrix));
 
 	// iterate throught the list of particles
-	std::list<Particle>::iterator it;
-
-	for(it = drawBuffer.begin(); it != drawBuffer.end(); ++it)
+	for(Particle *it = headParticle; it != 0; it = it->next)
 	{
 		// get the position from this matrix
 		Vect4D camPosVect;
@@ -278,15 +255,6 @@ void ParticleEmitter::draw()
 		GLenum glError = glGetError();
 		UNUSED_VAR(glError);
 	}
-
-	// delete the buffer
-	for( size_t i = 0; i < drawBuffer.size(); ++i )
-	{
-		drawBuffer.pop_back();
-	}
-
-	// done with buffer, clear it.
-	drawBuffer.clear();
 }
 
 

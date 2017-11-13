@@ -21,17 +21,17 @@ Matrix::Matrix(const Matrix& m)
 	this->v3._m = _mm_set_ps(m.v3.w, m.v3.z, m.v3.y, m.v3.x);
 }
 
-Matrix::Matrix(const float &m0, const float &m1, const float &m2, const float &m3,
-			   const float &m4, const float &m5, const float &m6, const float &m7,
-			   const float &m8, const float &m9, const float &m10, const float &m11,
-			   const float &m12, const float &m13, const float &m14, const float &m15)
+Matrix::Matrix(float const &m0, float const &m1, float const &m2, float const &m3,
+			   float const &m4, float const &m5, float const &m6, float const &m7,
+			   float const &m8, float const &m9, float const &m10, float const &m11,
+			   float const &m12, float const &m13, float const &m14, float const &m15)
 
 	:m0(m0), m1(m1), m2(m2), m3(m3),
 	m4(m4), m5(m5), m6(m6), m7(m7),
 	m8(m8), m9(m9), m10(m10), m11(m11),
 	m12(m12), m13(m13), m14(m14), m15(m15) {}
 
-Matrix::Matrix(const Vect4D & v0, const Vect4D & v1, const Vect4D & v2, const Vect4D & v3)
+Matrix::Matrix(Vect4D const & v0, const Vect4D & v1, const Vect4D & v2, const Vect4D & v3)
 {
 	this->v0._m = v0._m;
 	this->v1._m = v1._m;
@@ -91,7 +91,7 @@ void Matrix::setTransMatrix(const Vect4D &t)
 	this->m15 = 1.0f;
 }
 
-void Matrix::set(const char &row, const Vect4D *t )
+void Matrix::set(char const &row, const Vect4D  *t )
 {
 	// initialize the rows of the matrix
 	switch( row )

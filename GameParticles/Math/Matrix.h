@@ -23,18 +23,18 @@ public:
 
 	//specialized for rvo and only floats
 	Matrix(
-		const float &m0, const float &m1, const float &m2, const float &m3,
-		const float &m4, const float &m5, const float &m6, const float &m7,
-		const float &m8, const float &m9, const float &m10, const float &m11,
-		const float &m12, const float &m13, const float &m14, const float &m15);
+		float const &m0, float const &m1, float const &m2, float const &m3,
+		float const &m4, float const &m5, float const &m6, float const &m7,
+		float const &m8, float const &m9, float const &m10, float const &m11,
+		float const &m12, float const &m13, float const &m14, float const &m15);
 
-	Matrix(const Vect4D &v0, const Vect4D &v1, const Vect4D &v2, const Vect4D &v3);
+	Matrix(Vect4D const &v0, const Vect4D &v1, const Vect4D &v2, const Vect4D &v3);
 
 	~Matrix();
 
 	//my reasoning for changing this to shoort is because it is the lowest byte size
-	void set(const char &row, const Vect4D *t);
-	void get(const char &row, Vect4D *vOut);
+	void set(char const &row, const Vect4D  *t);
+	void get(char const &row, Vect4D *vOut);
 
 	void setIdentMatrix();
 	void setTransMatrix(const Vect4D &t);

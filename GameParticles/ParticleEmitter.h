@@ -47,9 +47,6 @@ private:
 	Vect4D	vel_variance;
 	Vect4D	pos_variance;
 	float	scale_variance;
-	
-	std::list<Particle> drawBuffer;
-	std::list<Particle> particle_list;
 };
 
 #endif // PARTICLEEMITTER_H
