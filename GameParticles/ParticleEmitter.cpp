@@ -138,7 +138,7 @@ void ParticleEmitter::update()
 	last_loop = current_time;
 }
 	   
-void ParticleEmitter::addParticleToList(Particle *p )
+void ParticleEmitter::addParticleToList(Particle * const p )
 {
 	assert(p);
 	if( this->headParticle == 0 )
@@ -157,7 +157,7 @@ void ParticleEmitter::addParticleToList(Particle *p )
 
 }
 
-void ParticleEmitter::removeParticleFromList( Particle *p )
+void ParticleEmitter::removeParticleFromList(const Particle * const p )
 {
 	// make sure we are not screwed with a null pointer
 	assert(p);
@@ -185,7 +185,7 @@ void ParticleEmitter::removeParticleFromList( Particle *p )
 	delete p;
 }
 
-void ParticleEmitter::draw()
+void ParticleEmitter::draw() const
 {
 	// get the camera matrix from OpenGL
 	// need to get the position
@@ -336,12 +336,12 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	sc = sc * var;
 }
 
-void * ParticleEmitter::operator new(const size_t i)
+void * ParticleEmitter::operator new(size_t i)
 {
 	return _aligned_malloc(i, 16);
 }
 
-void * ParticleEmitter::operator new[](const size_t i)
+void * ParticleEmitter::operator new[](size_t i)
 {
 	return _aligned_malloc(i, 16);
 }

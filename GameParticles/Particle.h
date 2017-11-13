@@ -11,14 +11,14 @@ public:
 	
 	Particle();	
 	~Particle();
-	void Update(const float& time_elapsed);
-	void CopyDataOnly(const Particle *p );
+	void Update(float const & time_elapsed);
+	void CopyDataOnly(const Particle * const p );
 
 	//needed for 16 byte alignment and simd
-	void* operator new(const size_t i);
-	void* operator new[](const size_t i);
-	void operator delete(void* p);
-	void operator delete[](void *p);
+	void* operator new(size_t i);
+	void* operator new[](size_t i);
+	void operator delete(void* const p);
+	void operator delete[](void * const p);
 
 private: //272
 	Particle *next;

@@ -16,7 +16,7 @@ Particle::~Particle()
 	// nothing to do
 }
 
-void Particle::CopyDataOnly(const Particle *p )
+void Particle::CopyDataOnly(const Particle * const p )
 {
 	// copy the data only
 	// this way of copying data is more efficient that element by element
@@ -28,27 +28,7 @@ void Particle::CopyDataOnly(const Particle *p )
 	this->life     = p->life;
 }
 
-void * Particle::operator new(const size_t i)
-{
-	return _aligned_malloc(i, 16);
-}
-
-void* Particle::operator new[](const size_t i)
-{
-	return _aligned_malloc(i, 16);
-}
-
-void Particle::operator delete(void * p)
-{
-	_aligned_free(p);
-}
-
-void Particle::operator delete[](void *p)
-{
-	_aligned_free(p);
-}
-
-void Particle::Update(const float& time_elapsed)
+void Particle::Update(float const & time_elapsed)
 {
 	// Rotate the matrices
 	
@@ -95,6 +75,27 @@ void Particle::Update(const float& time_elapsed)
 
 	rotation = rotation + MatrixScale + rotation_velocity * time_elapsed *2.01f;
 }
+
+void * Particle::operator new(size_t i)
+{
+	return _aligned_malloc(i, 16);
+}
+
+void* Particle::operator new[](size_t i)
+{
+	return _aligned_malloc(i, 16);
+}
+
+void Particle::operator delete(void * const p)
+{
+	_aligned_free(p);
+}
+
+void Particle::operator delete[](void * const p)
+{
+	_aligned_free(p);
+}
+
 
 
 // End of file

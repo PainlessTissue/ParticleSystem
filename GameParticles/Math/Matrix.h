@@ -14,7 +14,7 @@
 class Vect4D;
 
 // class
-/* __declspec(align(16)) */ class Matrix
+__declspec(align(16)) class Matrix
 {
 public:
 
@@ -33,32 +33,32 @@ public:
 	~Matrix();
 
 	//my reasoning for changing this to shoort is because it is the lowest byte size
-	void set(char const &row, const Vect4D  *t);
-	void get(char const &row, Vect4D *vOut);
+	void set(char const &row, const Vect4D* const t);
+	void get(char const &row, Vect4D * const vOut) const;
 
 	void setIdentMatrix();
 	void setTransMatrix(const Vect4D &t);
-	void setScaleMatrix(const Vect4D *s);
+	void setScaleMatrix(const Vect4D * const scale);
 	void setRotZMatrix(const float &Z_Radians);
 
 	float &operator[](const short &e);
 
 #if !PROXY
-	Matrix operator*(const Matrix &t);
+	Matrix operator*(const Matrix &t) const;
 #endif
 	//Matrix operator*( float s );
 
-	float Determinant();
+	float Determinant() const;
 
 	Matrix GetAdjugate();
-	Matrix& Matrix::operator/=(float t);
+	Matrix& Matrix::operator/=(float const &t);
 
 	void Matrix::Inverse(Matrix &out);
 
-	//void* operator new(const size_t i);
-	//void* operator new[](const size_t i);
-	//void operator delete(void* p);
-	//void operator delete[](void *p);
+	void* operator new(const size_t i);
+	void* operator new[](const size_t i);
+	void operator delete(void* p);
+	void operator delete[](void *p);
 
 private:
 		//64

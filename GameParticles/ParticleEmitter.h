@@ -15,15 +15,15 @@ public:
 	
 	void SpawnParticle();
 	void update();
-	void draw();
+	void draw() const;
 
-	void addParticleToList(Particle *p );
-	void removeParticleFromList( Particle *p);
+	void addParticleToList(Particle * const p );
+	void removeParticleFromList(const Particle * const p);
 
 	void Execute(Vect4D &pos, Vect4D &vel, Vect4D &sc);
 
-	void* operator new(const size_t i);
-	void* operator new[](const size_t i);
+	void* operator new(size_t i);
+	void* operator new[](size_t i);
 	void operator delete(void* p);
 	void operator delete[](void *p);
 

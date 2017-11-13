@@ -20,32 +20,32 @@ public:
 	friend class Matrix;
 
 	Vect4D();
-	Vect4D(const float &tx, const float &ty, const float &tz, const float &tw = 1.0f);
+	Vect4D(float const &tx, float const &ty, float const &tz, float const &tw = 1.0f);
 	~Vect4D();
 
 	//specialized for intrinsics
-	Vect4D(const __m128 &_m);
+	Vect4D(__m128 const &_m);
 
 	void norm(Vect4D &out);
-	void set(const float &tx, const float &ty, const float &tz, const float &tw = 1.0f);
+	void set(float const &tx, float const &ty, float const &tz, float const &tw = 1.0f);
 
-	Vect4D operator + (const Vect4D &t) const;
-	Vect4D operator - (const Vect4D &t) const;
-	Vect4D operator * (const float &scale) const;
+	Vect4D operator + (Vect4D const &t) const;
+	Vect4D operator - (Vect4D const &t) const;
+	Vect4D operator * (float const &scale) const;
 
-	Vect4D operator *= (const float &f);
+	Vect4D operator *= (float const &f);
 
-	void Cross(const Vect4D &vin, Vect4D &vout) const;
+	void Cross(Vect4D const &vin, Vect4D &vout) const;
 
-	float &operator[](const char &e);
+	float &operator[](char const &e);
 
 	//faster square root because math.sqrt is slow
-	float altSqrt(const float &number) const;
+	float altSqrt(float const &number) const;
 
-	void* operator new(const size_t i);
-	void* operator new[](const size_t i);
-	void operator delete(void* p);
-	void operator delete[](void *p);
+	void* operator new(size_t i);
+	void* operator new[](size_t i);
+	void operator delete(void* const p);
+	void operator delete[](void * const p);
 
 private:
 	//16

@@ -91,7 +91,7 @@ void Matrix::setTransMatrix(const Vect4D &t)
 	this->m15 = 1.0f;
 }
 
-void Matrix::set(char const &row, const Vect4D  *t )
+void Matrix::set(char const &row, const Vect4D * const t )
 {
 	// initialize the rows of the matrix
 	switch( row )
@@ -190,8 +190,7 @@ float &Matrix::operator[](const short &e)
 	}
 }
 
-
-void Matrix::get(const char &row, Vect4D *t )
+void Matrix::get(const char &row, Vect4D * const t ) const
 { // get a row of the matrix
 	switch( row )
 	{
@@ -229,7 +228,7 @@ void Matrix::get(const char &row, Vect4D *t )
 }
 
 #if !PROXY
-Matrix Matrix::operator*(const Matrix& m) 
+Matrix Matrix::operator*(const Matrix& m) const 
 { // matrix multiplications
 	return Matrix
 	(
@@ -293,7 +292,7 @@ Matrix Matrix::operator*(const Matrix& m)
 
 #endif
 
-Matrix& Matrix::operator/=(float rhs)
+Matrix& Matrix::operator/= (float const &rhs)
 { 
 	// divide each element by a value
 	// using inverse multiply trick, faster that individual divides
@@ -319,7 +318,7 @@ Matrix& Matrix::operator/=(float rhs)
 	return *this;
 }
 
-float Matrix::Determinant() 
+float Matrix::Determinant() const
 {
 	// A = { a,b,c,d / e,f,g,h / j,k,l,m / n,o,p,q }
 	// A = { 0,1,2,3 / 4,5,6,7 / 8,9,10,11 / 12,13,14,15 }
@@ -539,7 +538,7 @@ Matrix Matrix::GetAdjugate()
 	return tmp;
 }
 
-void Matrix::Inverse( Matrix &out ) 
+void Matrix::Inverse( Matrix &out )
 {
 	float det = Determinant();
 
@@ -553,28 +552,28 @@ void Matrix::Inverse( Matrix &out )
 	else
 		out = Matrix(GetAdjugate() /= det);
 }
-//
-//void * Matrix::operator new(const size_t i)
-//{
-//	return _aligned_malloc(i, 16);
-//}
-//
-//void * Matrix::operator new[](const size_t i)
-//{
-//	return _aligned_malloc(i, 16);
-//}
-//
-//void Matrix::operator delete(void * p)
-//{
-//	_aligned_free(p);
-//}
-//
-//void Matrix::operator delete[](void * p)
-//{	
-//	_aligned_free(p);
-//}
 
-void Matrix::setScaleMatrix(const Vect4D *scale)
+void * Matrix::operator new(const size_t i)
+{
+	return _aligned_malloc(i, 16);
+}
+
+void * Matrix::operator new[](const size_t i)
+{
+	return _aligned_malloc(i, 16);
+}
+
+void Matrix::operator delete(void * p)
+{
+	_aligned_free(p);
+}
+
+void Matrix::operator delete[](void * p)
+{	
+	_aligned_free(p);
+}
+
+void Matrix::setScaleMatrix(const Vect4D * const scale)
 {
 	//	{	sx		0		0		0	}
 	//	{	0		sy		0		0	}
