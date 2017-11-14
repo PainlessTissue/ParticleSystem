@@ -43,9 +43,9 @@ void Particle::Update(float const & time_elapsed)
 	// serious math below - magic secret sauce
 	life += time_elapsed;
 	position = position + (velocity * time_elapsed);
-	Vect4D z_axis(0.0f, -0.25f, 1.0f);
-	Vect4D v(3, 4, 0);
-	position.Cross( z_axis, v);
+	
+	Vect4D v(3.0f, 4.0f, 0.0f);
+	position.Cross(Vect4D(0.0f, -0.25f, 1.0f), v);
 	v.norm(v);
 	position = position + v * 0.05f * life;
 

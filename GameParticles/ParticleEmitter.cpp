@@ -28,7 +28,7 @@ static const float squareVertices[] =
 
 
 ParticleEmitter::ParticleEmitter()
-:	last_active_particle(-1),
+:	last_active_particle(0),
 	spawn_frequency( 0.0000001f ),	
 	last_spawn( globalTimer::getTimerInSec() ),
 	last_loop(  globalTimer::getTimerInSec() ),
@@ -50,7 +50,7 @@ ParticleEmitter::~ParticleEmitter()
 void ParticleEmitter::SpawnParticle()
 {
 	// create another particle if there are ones free
-	if( last_active_particle < NUM_PARTICLES-1 )
+	if(last_active_particle < NUM_PARTICLES)
 	{
 	
 		// create new particle
@@ -60,7 +60,7 @@ void ParticleEmitter::SpawnParticle()
 		this->Execute(newParticle->position, newParticle->velocity, newParticle->scale);
 
 		// increment count
-		last_active_particle++;
+		++last_active_particle;
 
 		// add to list
 		this->addParticleToList( newParticle );
@@ -113,7 +113,7 @@ void ParticleEmitter::update()
 			this->removeParticleFromList( s );
 
 			// update the number of particles
-			last_active_particle--;
+			--last_active_particle;
 		}
 		else
 		{
@@ -124,7 +124,7 @@ void ParticleEmitter::update()
 	}
 
 	//move a copy to vector for faster iterations in draw
-	p = this->headParticle;
+	//p = this->headParticle;
 
 	last_loop = current_time;
 }
@@ -176,6 +176,51 @@ void ParticleEmitter::removeParticleFromList(const Particle * const p )
 	delete p;
 }
 
+#if 1 //my modifications
+void ParticleEmitter::draw() const
+{
+	// get the camera matrix from OpenGL
+	// need to get the position
+	Matrix cameraMatrix;
+
+	// get the camera matrix from OpenGL
+	glGetFloatv(GL_MODELVIEW_MATRIX, reinterpret_cast<float*>(&cameraMatrix));
+
+	// get the position from this matrix
+	Vect4D camPosVect;
+	cameraMatrix.get(3, &camPosVect );
+
+	// camera position
+	Matrix transCamera(camPosVect);
+
+	// OpenGL goo... don't worrry about this
+	glVertexPointer(3, GL_FLOAT, 0, squareVertices);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glColorPointer(4, GL_UNSIGNED_BYTE, 0, squareColors);
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	// iterate throught the list of particles
+	for(Particle *it = headParticle; it != 0; it = it->next)
+	{
+		// total transformation of particle
+		Matrix tmp = transCamera * Matrix(it->position) * Matrix(it->rotation);
+
+		// set the transformation matrix
+		//glLoadMatrixf(reinterpret_cast<float*>(&(transCamera * transParticle * rotParticle)));
+		glLoadMatrixf(reinterpret_cast<float*>(&(tmp)));
+
+		// draw the trangle strip
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+		
+		// clears or flushes some internal setting, used in debug, but is need for performance reasons
+		// magic...  really it's magic.
+		//GLenum glError = glGetError();
+		//UNUSED_VAR(glError);
+	}
+}
+
+#elif 1 //vanilla
 void ParticleEmitter::draw() const
 {
 	// get the camera matrix from OpenGL
@@ -186,11 +231,11 @@ void ParticleEmitter::draw() const
 	glGetFloatv(GL_MODELVIEW_MATRIX, reinterpret_cast<float*>(&cameraMatrix));
 
 	// iterate throught the list of particles
-	for(Particle *it = headParticle; it != 0; it = it->next)
+	for (Particle *it = headParticle; it != 0; it = it->next)
 	{
 		// get the position from this matrix
 		Vect4D camPosVect;
-		cameraMatrix.get(3, &camPosVect );
+		cameraMatrix.get(3, &camPosVect);
 
 		// OpenGL goo... don't worrry about this
 		glVertexPointer(3, GL_FLOAT, 0, squareVertices);
@@ -200,15 +245,15 @@ void ParticleEmitter::draw() const
 
 		// camera position
 		Matrix transCamera;
-		transCamera.setTransMatrix( camPosVect );
+		transCamera.setTransMatrix(camPosVect);
 
 		// particle position
 		Matrix transParticle;
-		transParticle.setTransMatrix( it->position );
+		transParticle.setTransMatrix(it->position);
 
 		// rotation matrix
 		Matrix rotParticle;
-		rotParticle.setRotZMatrix( it->rotation );
+		rotParticle.setRotZMatrix(it->rotation);
 
 		// pivot Point
 		Matrix pivotParticle;
@@ -217,7 +262,7 @@ void ParticleEmitter::draw() const
 
 		// scale Matrix
 		Matrix scaleMatrix;
-		scaleMatrix.setScaleMatrix( &it->scale );
+		scaleMatrix.setScaleMatrix(&it->scale);
 
 		// total transformation of particle
 		Matrix tmp = scaleMatrix * transCamera * transParticle * rotParticle * scaleMatrix;
@@ -228,15 +273,17 @@ void ParticleEmitter::draw() const
 		// draw the trangle strip
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-		
+
+
 		// clears or flushes some internal setting, used in debug, but is need for performance reasons
 		// magic...  really it's magic.
 		GLenum glError = glGetError();
 		UNUSED_VAR(glError);
 	}
 }
+#endif
 
-
+#if 0 //vanilla
 void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 {
 	// Add some randomness...
@@ -315,6 +362,86 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	sc = sc * var;
 }
 
+#elif 1
+void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
+{
+	// Add some randomness...
+
+	// Ses it's ugly - I didn't write this so don't bitch at me
+	// Sometimes code like this is inside real commerical code ( so now you know how it feels )
+
+	// x - variance
+	float var = static_cast<float>(rand() % 1000) * 0.001f;
+	float *t_pos = reinterpret_cast<float*>(&pos);
+	float *t_var = &pos_variance[0];
+	if (static_cast<float>(rand() % 2) == 0)
+	{
+		var *= -1.0f;
+	}
+	*t_pos += *t_var * var;
+
+	// y - variance
+	var = static_cast<float>(rand() % 1000) * 0.001f;
+	t_pos++;
+	t_var++;
+	if (static_cast<float>(rand() % 2) == 0)
+	{
+		var *= -1.0f;
+	}
+	*t_pos += *t_var * var;
+
+	// z - variance
+	var = static_cast<float>(rand() % 1000) * 0.001f;
+	t_pos++;
+	t_var++;
+	if (static_cast<float>(rand() % 2) == 0)
+	{
+		var *= -1.0f;
+	}
+	*t_pos += *t_var * var;
+
+	var = static_cast<float>(rand() % 1000) * 0.001f;
+
+	// x  - add velocity
+	t_pos = &vel[0];
+	t_var = &vel_variance[0];
+	if (static_cast<float>(rand() % 2) == 0)
+	{
+		var *= -1.0f;
+	}
+	*t_pos += *t_var * var;
+
+	// y - add velocity
+	var = static_cast<float>(rand() % 1000) * 0.001f;
+	t_pos++;
+	t_var++;
+	if (static_cast<float>(rand() % 2) == 0)
+	{
+		var *= -1.0f;
+	}
+	*t_pos += *t_var * var;
+
+	// z - add velocity
+	var = static_cast<float>(rand() % 1000) * 0.001f;
+	t_pos++;
+	t_var++;
+	if (static_cast<float>(rand() % 2) == 0)
+	{
+		var *= -1.0f;
+	}
+	*t_pos += *t_var * var;
+
+	// correct the sign
+	var = 2.0f * static_cast<float>(rand() % 1000) * 0.001f;
+
+	if (static_cast<float>(rand() % 2) == 0)
+	{
+		var *= -1.0f;
+	}
+	sc = sc * var;
+}
+
+#endif
 void * ParticleEmitter::operator new(size_t i)
 {
 	return _aligned_malloc(i, 16);

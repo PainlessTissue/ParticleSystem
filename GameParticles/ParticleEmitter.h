@@ -28,8 +28,7 @@ public:
 	void operator delete[](void *p);
 
 
-private:
-	//64
+private: //size of :64
 
 	int		last_active_particle;
 	float	spawn_frequency;

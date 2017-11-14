@@ -8,7 +8,7 @@
 #include <xmmintrin.h>
 #include <smmintrin.h>  
 
-#define PROXY 0
+#define PROXY 1
 
 // forward declare
 class Vect4D;
@@ -18,8 +18,13 @@ __declspec(align(16)) class Matrix
 {
 public:
 
+	//these are a bunch of overloaded operators that allow for 
+	//less temporary variables to be created
 	Matrix();
 	Matrix(const Matrix& t);
+	Matrix(float const &ROTZ);
+	Matrix(const Vect4D * const SCALE);
+	Matrix(Vect4D const & TRANS);
 
 	//specialized for rvo and only floats
 	Matrix(
@@ -46,9 +51,6 @@ public:
 #if !PROXY
 	Matrix operator*(const Matrix &t) const;
 #endif
-	//Matrix operator*( float s );
-
-	float Determinant() const;
 
 	Matrix GetAdjugate();
 	Matrix& Matrix::operator/=(float const &t);
@@ -60,7 +62,7 @@ public:
 	void operator delete(void* p);
 	void operator delete[](void *p);
 
-private:
+//private:
 		//64
 	union
 	{
@@ -175,7 +177,118 @@ struct mMul3
 
 	operator Matrix()
 	{
-		return Matrix();
+		Matrix a(
+			Vect4D(
+				_mm_add_ps(
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(m0.v0.x), m1.v0._m),
+						_mm_mul_ps(_mm_set_ps1(m0.v0.y), m1.v1._m)),
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(m0.v0.z), m1.v2._m),
+						_mm_mul_ps(_mm_set_ps1(m0.v0.w), m1.v3._m)))),
+
+			Vect4D(
+				_mm_add_ps(
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(m0.v1.x), m1.v0._m),
+						_mm_mul_ps(_mm_set_ps1(m0.v1.y), m1.v1._m)),
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(m0.v1.z), m1.v2._m),
+						_mm_mul_ps(_mm_set_ps1(m0.v1.w), m1.v3._m)))),
+
+			Vect4D(
+				_mm_add_ps(
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(m0.v2.x), m1.v0._m),
+						_mm_mul_ps(_mm_set_ps1(m0.v2.y), m1.v1._m)),
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(m0.v2.z), m1.v2._m),
+						_mm_mul_ps(_mm_set_ps1(m0.v2.w), m1.v3._m)))),
+
+			Vect4D(
+				_mm_add_ps(
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(m0.v3.x), m1.v0._m),
+						_mm_mul_ps(_mm_set_ps1(m0.v3.y), m1.v1._m)),
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(m0.v3.z), m1.v2._m),
+						_mm_mul_ps(_mm_set_ps1(m0.v3.w), m1.v3._m)))));
+
+		//second matrix
+		return Matrix(
+			Vect4D(
+				_mm_add_ps(
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(a.v0.x), m2.v0._m),
+						_mm_mul_ps(_mm_set_ps1(a.v0.y), m2.v1._m)),
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(a.v0.z), m2.v2._m),
+						_mm_mul_ps(_mm_set_ps1(a.v0.w), m2.v3._m)))),
+
+			Vect4D(
+				_mm_add_ps(
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(a.v1.x), m2.v0._m),
+						_mm_mul_ps(_mm_set_ps1(a.v1.y), m2.v1._m)),
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(a.v1.z), m2.v2._m),
+						_mm_mul_ps(_mm_set_ps1(a.v1.w), m2.v3._m)))),
+
+			Vect4D(
+				_mm_add_ps(
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(a.v2.x), m2.v0._m),
+						_mm_mul_ps(_mm_set_ps1(a.v2.y), m2.v1._m)),
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(a.v2.z), m2.v2._m),
+						_mm_mul_ps(_mm_set_ps1(a.v2.w), m2.v3._m)))),
+
+			Vect4D(
+				_mm_add_ps(
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(a.v3.x), m2.v0._m),
+						_mm_mul_ps(_mm_set_ps1(a.v3.y), m2.v1._m)),
+					_mm_add_ps(
+						_mm_mul_ps(_mm_set_ps1(a.v3.z), m2.v2._m),
+						_mm_mul_ps(_mm_set_ps1(a.v3.w), m2.v3._m)))));
+
+		////third matrix
+		//return Matrix (
+		//	Vect4D(
+		//		_mm_add_ps(
+		//			_mm_add_ps(
+		//				_mm_mul_ps(_mm_set_ps1(b.v0.x), m3.v0._m),
+		//				_mm_mul_ps(_mm_set_ps1(b.v0.y), m3.v1._m)),
+		//			_mm_add_ps(
+		//				_mm_mul_ps(_mm_set_ps1(b.v0.z), m3.v2._m),
+		//				_mm_mul_ps(_mm_set_ps1(b.v0.w), m3.v3._m)))),
+
+		//	Vect4D(
+		//		_mm_add_ps(
+		//			_mm_add_ps(
+		//				_mm_mul_ps(_mm_set_ps1(b.v1.x), m3.v0._m),
+		//				_mm_mul_ps(_mm_set_ps1(b.v1.y), m3.v1._m)),
+		//			_mm_add_ps(
+		//				_mm_mul_ps(_mm_set_ps1(b.v1.z), m3.v2._m),
+		//				_mm_mul_ps(_mm_set_ps1(b.v1.w), m3.v3._m)))),
+
+		//	Vect4D(
+		//		_mm_add_ps(
+		//			_mm_add_ps(
+		//				_mm_mul_ps(_mm_set_ps1(b.v2.x), m3.v0._m),
+		//				_mm_mul_ps(_mm_set_ps1(b.v2.y), m3.v1._m)),
+		//			_mm_add_ps(
+		//				_mm_mul_ps(_mm_set_ps1(b.v2.z), m3.v2._m),
+		//				_mm_mul_ps(_mm_set_ps1(b.v2.w), m3.v3._m)))),
+
+		//	Vect4D(
+		//		_mm_add_ps(
+		//			_mm_add_ps(
+		//				_mm_mul_ps(_mm_set_ps1(b.v3.x), m3.v0._m),
+		//				_mm_mul_ps(_mm_set_ps1(b.v3.y), m3.v1._m)),
+		//			_mm_add_ps(
+		//				_mm_mul_ps(_mm_set_ps1(b.v3.z), m3.v2._m),
+		//				_mm_mul_ps(_mm_set_ps1(b.v3.w), m3.v3._m)))));
 	}
 
 };

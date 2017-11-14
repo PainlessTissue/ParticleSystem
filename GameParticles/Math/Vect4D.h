@@ -47,7 +47,7 @@ public:
 	void operator delete(void* const p);
 	void operator delete[](void * const p);
 
-private:
+//private:
 	//16
 	union
 	{

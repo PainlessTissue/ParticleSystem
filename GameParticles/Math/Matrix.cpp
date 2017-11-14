@@ -7,10 +7,6 @@
 
 Matrix::Matrix()
 {
-	this->v0._m = _mm_setzero_ps();
-	this->v1._m = _mm_setzero_ps();
-	this->v2._m = _mm_setzero_ps();
-	this->v3._m = _mm_setzero_ps();
 };
 
 Matrix::Matrix(const Matrix& m)
@@ -19,6 +15,49 @@ Matrix::Matrix(const Matrix& m)
 	this->v1._m = _mm_set_ps(m.v1.w, m.v1.z, m.v1.y, m.v1.x);
 	this->v2._m = _mm_set_ps(m.v2.w, m.v2.z, m.v2.y, m.v2.x);
 	this->v3._m = _mm_set_ps(m.v3.w, m.v3.z, m.v3.y, m.v3.x);
+}
+
+Matrix::Matrix(Vect4D const & TRANS)
+{
+	this->m0 = 1.0f;
+	this->m1 = 0.0f;
+	this->m2 = 0.0f;
+	this->m3 = 0.0f;
+
+	this->m4 = 0.0f;
+	this->m5 = 1.0f;
+	this->m6 = 0.0f;
+	this->m7 = 0.0f;
+
+	this->m8 = 0.0f;
+	this->m9 = 0.0f;
+	this->m10 = 1.0f;
+	this->m11 = 0.0f;
+
+	this->m12 = TRANS.x;
+	this->m13 = TRANS.y;
+	this->m14 = TRANS.z;
+	this->m15 = 1.0f;
+
+}
+
+Matrix::Matrix(float const &ROTZ) 
+{
+	*this = Matrix(
+		cosf(ROTZ), -sinf(ROTZ), 0, 0,
+		sinf(ROTZ), cosf(ROTZ), 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1);
+
+}
+
+Matrix::Matrix(const Vect4D * const SCALE)
+{
+	*this = Matrix(
+		SCALE->x, 0, 0, 0,
+		0, SCALE->y, 0, 0,
+		0, 0, SCALE->z, 0,
+		0, 0, 0, 1.0);
 }
 
 Matrix::Matrix(float const &m0, float const &m1, float const &m2, float const &m3,
@@ -318,45 +357,6 @@ Matrix& Matrix::operator/= (float const &rhs)
 	return *this;
 }
 
-float Matrix::Determinant() const
-{
-	// A = { a,b,c,d / e,f,g,h / j,k,l,m / n,o,p,q }
-	// A = { 0,1,2,3 / 4,5,6,7 / 8,9,10,11 / 12,13,14,15 }
-	
-	// det(A) = a*det( { f,g,h / k,l,m / o,p,q } )
-	//			- b*det( { e,g,h / j,l,m / n,p,q } )
-	//			+ c*det( { e,f,h / j,k,m / n,o,q } )
-	//			- d*det( { e,f,g / j,k,l / n,o,p } )
-	
-	// det(A) = (a (f (lq - mp) - g (kq - mo) + h (kp - lo) ) )
-	//			- (b (e (lq - mp) - g (jq - mn) + h (jp - ln) ) )
-	//			+ (c (e (kq - mo) - f (jq - mn) + h (jo - kn) ) )
-	//			- (d (e (kp - lo) - f (jp - ln) + g (jo - kn) ) )
-	
-	// ta = (lq - mp)
-	const float ta = (m10 * m15) - (m11 * m14);
-	// tb = (kq - mo)
-	const float tb = (m9 * m15) - (m11 * m13);
-	// tc = (kp - lo)
-	const float tc = (m9 * m14) - (m10 * m13);
-	// td = (jq - mn)
-	const float td = (m8 * m15) - (m11 * m12);
-	// te = (jo - kn)
-	const float te = (m8 * m13) - (m9 *  m12);
-	// tf = (jp - ln)
-	const float tf = (m8 * m14) - (m10 * m12);
-	
-	// det(A) = (a (f*ta  - g*tb + h*tc) )
-	//			- (b (e*ta - g*td + h*tf) )
-	//			+ (c (e*tb - f*td + h*te) )
-	//			- (d (e*tc - f*tf + g*te) )
-	return ((m0 * ((m5 * ta) - (m6 * tb) + (m7 * tc)))
-			- (m1 * ((m4 * ta) - (m6 * td) + (m7 * tf)))
-			+ (m2 * ((m4 * tb) - (m5 * td) + (m7 * te)))
-			- (m3 * ((m4 * tc) - (m5 * tf) + (m6 * te))));
-	
-}
-
 Matrix Matrix::GetAdjugate() 
 {
 	// matrix = { a,b,c,d / e,f,g,h / j,k,l,m / n,o,p,q }
@@ -538,21 +538,51 @@ Matrix Matrix::GetAdjugate()
 	return tmp;
 }
 
-void Matrix::Inverse( Matrix &out )
+#if 1
+void Matrix::Inverse(Matrix &out)
 {
-	float det = Determinant();
-
-	//got rid of abs because most of math is slow
-	if (det < 0)
-		det = -det;
-
-	if (det < 0.0001f) {}
-	// do nothing, Matrix is not invertable
-
-	else
-		out = Matrix(GetAdjugate() /= det);
+	out = GetAdjugate();
 }
 
+#elif 1
+
+#define MakeShuffleMask(x,y,z,w)           (x | (y<<2) | (z<<4) | (w<<6))
+
+// vec(0, 1, 2, 3) -> (vec[x], vec[y], vec[z], vec[w])
+#define VecSwizzle(vec, x,y,z,w)           _mm_shuffle_ps(vec, vec, MakeShuffleMask(x,y,z,w))
+#define VecSwizzle1(vec, x)                _mm_shuffle_ps(vec, vec, MakeShuffleMask(x,x,x,x))
+// special swizzle
+#define VecSwizzle_0101(vec)               _mm_movelh_ps(vec, vec)
+#define VecSwizzle_2323(vec)               _mm_movehl_ps(vec, vec)
+#define VecSwizzle_0022(vec)               _mm_moveldup_ps(vec)
+#define VecSwizzle_1133(vec)               _mm_movehdup_ps(vec)
+
+// return (vec1[x], vec1[y], vec2[z], vec2[w])
+#define VecShuffle(vec1, vec2, x,y,z,w)    _mm_shuffle_ps(vec1, vec2, MakeShuffleMask(x,y,z,w))
+// special shuffle
+#define VecShuffle_0101(vec1, vec2)        _mm_movelh_ps(vec1, vec2)
+#define VecShuffle_2323(vec1, vec2)        _mm_movehl_ps(vec2, vec1)
+
+void Matrix::Inverse(Matrix &out)
+{
+	Matrix r;
+
+	// transpose 3x3, we know m03 = m13 = m23 = 0
+	__m128 t0 = VecShuffle_0101(this->v0._m, this->v1._m); // 00, 01, 10, 11
+	__m128 t1 = VecShuffle_2323(this->v0._m, this->v1._m); // 02, 03, 12, 13
+	r.v0._m = VecShuffle(t0, this->m2._m, v0.x, v1.x, v2.x, 0); // 00, 10, 20, 23(=0)
+	r.v1._m = VecShuffle(t0, this->m2._m, 1, 3, 1, 3); // 01, 11, 21, 23(=0)
+	r.v2._m = VecShuffle(t1, this->m2._m, 0, 2, 2, 3); // 02, 12, 22, 23(=0)
+
+														 // last line
+	r.v3 = _mm_mul_ps(r.v0._m, VecSwizzle1(this->v3._m, 0));
+	r.v3 = _mm_add_ps(r.v3._m, _mm_mul_ps(r.v1._m, VecSwizzle1(this->v3._m, 1)));
+	r.v3 = _mm_add_ps(r.v3._m, _mm_mul_ps(r.v2._m, VecSwizzle1(this->v3._m, 2)));
+	r.v3 = _mm_sub_ps(_mm_setr_ps(0.f, 0.f, 0.f, 1.f), r.v3._m);
+
+	out = r;
+}
+#endif
 void * Matrix::operator new(const size_t i)
 {
 	return _aligned_malloc(i, 16);

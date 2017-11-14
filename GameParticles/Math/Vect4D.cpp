@@ -6,7 +6,6 @@
 
 Vect4D::Vect4D()
 {
-	this->_m = _mm_setzero_ps();
 }
 
 Vect4D::Vect4D(float const &tx, float const &ty, float const &tz, float const &tw)
@@ -45,9 +44,6 @@ Vect4D Vect4D::operator + (Vect4D const &t) const
 
 Vect4D Vect4D::operator - (Vect4D const &t) const
 {
-	//return Vect4D(this->x - t.x, this->y - t.y, this->z - t.z, this->w - t.w);
-	//__m128 d = _mm_sub_ps(this->_m, t._m);
-	//return Vect4D(d);
 	return Vect4D(_mm_sub_ps(this->_m, t._m)); //this is working now... but i dont know why
 }
 

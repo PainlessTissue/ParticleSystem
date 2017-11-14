@@ -20,7 +20,7 @@ public:
 	void operator delete(void* const p);
 	void operator delete[](void * const p);
 
-private: //80
+private: //size of: 80
 	Particle *next;
 	Particle *prev;
 	float padding1;

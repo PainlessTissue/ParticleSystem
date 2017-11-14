@@ -128,7 +128,7 @@ int main()
 			float drawTime = drawTimer.timeInSeconds();
 			printf("\nLoopTime: update:%f ms  draw:%f ms  tot:%f\n",updateTime * 1000.0f, drawTime * 1000.0f, (updateTime + drawTime) *1000.0f);
 			
-			printf("Size of Particle %i Size of Particle Emitter %i", sizeof(Particle), sizeof(ParticleEmitter));
+			//printf("Size of Particle %i Size of Particle Emitter %i", sizeof(Particle), sizeof(ParticleEmitter));
 			//printf("sizeof %i" , sizeof(size_t));
 		}
 	}
