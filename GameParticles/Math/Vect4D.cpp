@@ -13,6 +13,18 @@ Vect4D::Vect4D(float const &tx, float const &ty, float const &tz, float const &t
 	this->_m = _mm_set_ps(tw, tz, ty, tx);
 }
 
+Vect4D::Vect4D(const Vect4D & v)
+{
+	this->_m = v._m;
+}
+
+Vect4D & Vect4D::operator=(const Vect4D & v)
+{
+	this->_m = v._m;
+
+	return *this;
+}
+
 Vect4D::~Vect4D()
 {
 	// nothing to delete
@@ -87,11 +99,6 @@ void Vect4D::Cross(Vect4D const& vin, Vect4D& vout) const
 	vout.y = (z*vin.x - x*vin.z);
 	vout.z = (x*vin.y - y*vin.x);
 	vout.w = 1.0f;
-}
-
-void Vect4D::set(float const &tx, float const &ty, float const &tz, float const &tw)
-{
-	this->_m = _mm_set_ps(tw, tz, ty, tx);
 }
 
 float Vect4D::altSqrt(float const &num) const

@@ -10,14 +10,17 @@
 __declspec(align(16)) class ParticleEmitter
 {
 public:
-	ParticleEmitter();
+	ParticleEmitter(); //default
+	ParticleEmitter(const ParticleEmitter &pe); //copy
+	ParticleEmitter &operator=(const ParticleEmitter &pe); //assignment
 	~ParticleEmitter();
 	
 	void SpawnParticle();
 	void update();
 	void draw() const;
 
-	void addParticleToList(Particle * const p );
+	void addParticleToList(Particle * const p);
+
 	void removeParticleFromList(const Particle * const p);
 
 	void Execute(Vect4D &pos, Vect4D &vel, Vect4D &sc);
@@ -34,7 +37,11 @@ private: //size of :64
 	float	spawn_frequency;
 	float	last_spawn;
 	float	last_loop;
+
 	Particle *headParticle;
+	int		 padding1;
+	int		 padding2;
+	int		 padding3;
 
 	Vect4D	vel_variance;
 	Vect4D	pos_variance;

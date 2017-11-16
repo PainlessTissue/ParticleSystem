@@ -1,0 +1,14 @@
+Changed all doubles to floats: -10ms
+Removed STL: -8 ms
+Refactored data structures: -3 ms
+16 byte alignment: -5ms
+SIMD: -7ms
+Fixed Inverse matrix function: -3ms
+Removed unnecessary math: -8ms
+Removed scale matrix: -4ms
+RVO: -2ms
+CONST ALL THE THINGS: -3ms
+Removal of unnecessary tmps: no major difference
+Removal of Enum: -10ms
+Modified main: -1ms
+Overrode big 4: added stability to speeds

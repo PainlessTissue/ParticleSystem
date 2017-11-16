@@ -19,15 +19,17 @@ __declspec(align(16)) class Vect4D
 public:
 	friend class Matrix;
 
-	Vect4D();
+	Vect4D(); //default
 	Vect4D(float const &tx, float const &ty, float const &tz, float const &tw = 1.0f);
-	~Vect4D();
+	Vect4D(const Vect4D &v);
+	Vect4D &operator=(const Vect4D &v); //assignment
+	
+	~Vect4D(); //destructor
 
 	//specialized for intrinsics
 	Vect4D(__m128 const &_m);
 
 	void norm(Vect4D &out);
-	void set(float const &tx, float const &ty, float const &tz, float const &tw = 1.0f);
 
 	Vect4D operator + (Vect4D const &t) const;
 	Vect4D operator - (Vect4D const &t) const;
@@ -47,6 +49,7 @@ public:
 	void operator delete(void* const p);
 	void operator delete[](void * const p);
 
+	//made public for proxy purposes. making private wouldve been a lot of extra work with accessors
 //private:
 	//16
 	union

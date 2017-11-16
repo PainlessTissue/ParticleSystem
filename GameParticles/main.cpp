@@ -11,92 +11,63 @@
 
 #define UNUSED_VAR(v) ((void *)v)
 
-int main();
-
-// WinMain required by windows for all win32 applications.
-// This is our Windows entry point.
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-{
-	UNUSED_VAR(nCmdShow);
-	UNUSED_VAR(lpCmdLine);
-	UNUSED_VAR(hPrevInstance);
-	OpenGLDevice::SetHInstance(hInstance);
-	main();
-}
-
 // main program
 int main()
 {
-	bool success = false;
-	srand(1);
-
 	// initialize timers:------------------------------
-		// Initialize timer
-		timer::initTimer();
 
-		// Create a global Timer
-		globalTimer::create();
+	// Initialize timer
+	timer::initTimer();
 
-		// Create a timer objects
-		timer updateTimer;
-		timer drawTimer;
+	// Create a global Timer
+	globalTimer::create();
+
+	// Create a timer objects
+	timer updateTimer;
+	timer drawTimer;
 
 	// create a window:---------------------------------
-		success = OpenGLDevice::InitWindow();
-		assert(success);
-	
+	OpenGLDevice::InitWindow();
+
 	// create an emitter:-------------------------------
-		//i made the emitter a pointer because its 4 bytes compared to 128
-		ParticleEmitter *emitter = new ParticleEmitter();
+
+	//i made the emitter a pointer because its 4 bytes compared to 64
+	ParticleEmitter *emitter = new ParticleEmitter();
 
 	// Get the inverse Camera Matrix:-------------------
 
-		// initialize the camera matrix
-		Matrix CameraMatrix;
-		CameraMatrix.setIdentMatrix();
+	// initialize the camera matrix
+	Matrix CameraMatrix;
+	CameraMatrix.setIdentMatrix();
 
-		// setup the translation matrix
-		Matrix TransMatrix;
-		TransMatrix.setTransMatrix(Vect4D(0.0f, 3.0f, 10.0f));
+	// setup the translation matrix
+	Matrix TransMatrix(Vect4D(0.0f, 3.0f, 10.0f));
 
-		// multiply them together
-		Matrix tmp(CameraMatrix * TransMatrix);
+	// multiply them together
+	Matrix tmp(CameraMatrix * TransMatrix);
 
-	// counter for printing
-	int i = 0;
+	// counter for printing (changed from int to char to save a few bytes. probably insignificant)
+	char i = 0;
+
+	Matrix inverseCameraMatrix;
+	tmp.Inverse(inverseCameraMatrix);
 
 	// main update loop... do this forever or until some breaks 
-	while(OpenGLDevice::IsRunning())
+	while (OpenGLDevice::IsRunning())
 	{
 		// start update timer ---------------------------------------
 		updateTimer.tic();
 
-			// initialize the camera matrix
-			Matrix cameraMatrix;
-			cameraMatrix.setIdentMatrix();
+		// start draw... end draw (the draw updates)
+		OpenGLDevice::StartDraw();
 
-			// setup the translation matrix
-			Matrix transMatrix;
-			transMatrix.setTransMatrix(Vect4D(0.0f, 3.0f, 10.0f));
+		// set matrix to Model View
+		// push the inverseCameraMarix to stack
+		glMatrixMode(GL_MODELVIEW);
+		glLoadMatrixf(reinterpret_cast<float*>(&inverseCameraMatrix));
 
-			// multiply them together
-			tmp = cameraMatrix * transMatrix;
-
-			// get the inverse matrix
-			Matrix inverseCameraMatrix;
-			tmp.Inverse(inverseCameraMatrix);
-
-			// start draw... end draw (the draw updates)
-			OpenGLDevice::StartDraw();
-		
-			// set matrix to Model View
-			// push the inverseCameraMarix to stack
-			glMatrixMode(GL_MODELVIEW);
-			glLoadMatrixf(reinterpret_cast<float*>(&inverseCameraMatrix));
-			glPushMatrix(); // push the camera matrix
-
-			// update the emitter
-			emitter->update();
+		// update the emitter
+		emitter->update();
 
 		// stop update timer: -----------------------------------------
 		updateTimer.toc();
@@ -104,11 +75,8 @@ int main()
 		// start draw timer: ----------------------------------------
 		drawTimer.tic();
 
-			// draw particles
-			emitter->draw();
-		
-			// pop matrix - needs to correspond to previous push
-			glPopMatrix();
+		// draw particles
+		emitter->draw();
 
 		// stop draw timer: -----------------------------------------
 		drawTimer.toc();
@@ -121,19 +89,16 @@ int main()
 
 		// update ouput every 50 times
 		++i;
-		if( i > 25 ) 
+		if (i > 25)
 		{
 			i = 0;
 			float updateTime = updateTimer.timeInSeconds();
 			float drawTime = drawTimer.timeInSeconds();
-			printf("\nLoopTime: update:%f ms  draw:%f ms  tot:%f\n",updateTime * 1000.0f, drawTime * 1000.0f, (updateTime + drawTime) *1000.0f);
-			
-			//printf("Size of Particle %i Size of Particle Emitter %i", sizeof(Particle), sizeof(ParticleEmitter));
-			//printf("sizeof %i" , sizeof(size_t));
+			printf("\nLoopTime: update:%f ms  draw:%f ms  tot:%f\n", updateTime * 1000.0f, drawTime * 1000.0f, (updateTime + drawTime) *1000.0f);
 		}
 	}
 	delete emitter;
-    return 0;
+	return 0;
 }
 
 

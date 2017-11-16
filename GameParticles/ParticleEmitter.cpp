@@ -10,15 +10,15 @@
 
 #include "DO_NOT_MODIFY\Trace.h"
 
-static const unsigned char squareColors[] = 
+static const unsigned char squareColors[] =
 {
 	255,  255,  000,  255,
 	000,  255,  255,  255,
 	000,  000,  000,  000,
 	255,  000,  255,  255,
-}; 
+};
 
-static const float squareVertices[] = 
+static const float squareVertices[] =
 {
 	-0.015f,  -0.015f, 0.0f,
 	 0.015f,  -0.015f, 0.0f,
@@ -28,18 +28,37 @@ static const float squareVertices[] =
 
 
 ParticleEmitter::ParticleEmitter()
-:	last_active_particle(0),
-	spawn_frequency( 0.0000001f ),	
-	last_spawn( globalTimer::getTimerInSec() ),
-	last_loop(  globalTimer::getTimerInSec() ),
+	: last_active_particle(0),
+	spawn_frequency(0.0000001f),
+	last_spawn(globalTimer::getTimerInSec()),
+	last_loop(globalTimer::getTimerInSec()),
 	headParticle(0),
-	vel_variance( 1.0f, 4.0f, 0.4f ),
-	pos_variance( 1.0f, 1.0f, 1.0f )
+	vel_variance(1.0f, 4.0f, 0.4f),
+	pos_variance(1.0f, 1.0f, 1.0f)
 {
 	//headParticle = new Particle[NUM_PARTICLES];
 }
 
+ParticleEmitter::ParticleEmitter(const ParticleEmitter & pe)
+	:last_active_particle(pe.last_active_particle), spawn_frequency(pe.spawn_frequency),
+	last_spawn(pe.last_spawn), last_loop(pe.last_loop), headParticle(pe.headParticle),
+	vel_variance(pe.vel_variance), pos_variance(pe.pos_variance) {}
 
+
+
+ParticleEmitter & ParticleEmitter::operator=(const ParticleEmitter & pe)
+{
+	last_active_particle = pe.last_active_particle;
+	spawn_frequency = pe.spawn_frequency;
+	last_spawn = pe.last_spawn;
+	last_loop = pe.last_loop;
+	headParticle = pe.headParticle;
+	vel_variance = pe.vel_variance;
+	pos_variance = pe.pos_variance;
+
+	return *this;
+
+}
 
 ParticleEmitter::~ParticleEmitter()
 {
@@ -50,11 +69,11 @@ ParticleEmitter::~ParticleEmitter()
 void ParticleEmitter::SpawnParticle()
 {
 	// create another particle if there are ones free
-	if(last_active_particle < NUM_PARTICLES)
+	if (last_active_particle < NUM_PARTICLES)
 	{
-	
 		// create new particle
-		Particle *newParticle = new Particle();// (headParticle + last_active_particle);
+		Particle *newParticle = new Particle();
+		//Particle *newParticle = headParticle + last_active_particle - sizeof(Particle);
 
 		// apply the variance
 		this->Execute(newParticle->position, newParticle->velocity, newParticle->scale);
@@ -63,8 +82,7 @@ void ParticleEmitter::SpawnParticle()
 		++last_active_particle;
 
 		// add to list
-		this->addParticleToList( newParticle );
-
+		this->addParticleToList(newParticle);
 	}
 }
 
@@ -75,9 +93,9 @@ void ParticleEmitter::update()
 
 	// spawn particles
 	float time_elapsed = current_time - last_spawn;
-	
+
 	// update
-	while( spawn_frequency < time_elapsed )
+	while (spawn_frequency < time_elapsed)
 	{
 		// spawn a particle
 		this->SpawnParticle();
@@ -86,14 +104,14 @@ void ParticleEmitter::update()
 		// last time
 		last_spawn = current_time;
 	}
-	
+
 	// total elapsed
 	time_elapsed = current_time - last_loop;
 
 	Particle *p = this->headParticle;
 	// walk the particles
 
-	while( p != 0 )
+	while (p != 0)
 	{
 		// call every particle and update its position 
 		p->Update(time_elapsed);
@@ -101,16 +119,15 @@ void ParticleEmitter::update()
 		// if it's live is greater that the max_life 
 		// and there is some on the list
 		// remove node
-		if((p->life > MAX_LIFE) && (last_active_particle > 0))
+		if ((p->life > MAX_LIFE) && (last_active_particle > 0))
 		{
-			// particle to remove
-			Particle *s = p;
+			Particle *past = p;
 
 			// need to squirrel it away.
 			p = p->next;
 
 			// remove last node
-			this->removeParticleFromList( s );
+			this->removeParticleFromList(past);
 
 			// update the number of particles
 			--last_active_particle;
@@ -120,25 +137,24 @@ void ParticleEmitter::update()
 			// increment to next point
 			p = p->next;
 		}
-
 	}
 
 	//move a copy to vector for faster iterations in draw
-	//p = this->headParticle;
+	p = this->headParticle;
 
 	last_loop = current_time;
 }
-	   
-void ParticleEmitter::addParticleToList(Particle * const p )
+
+void ParticleEmitter::addParticleToList(Particle * const p)
 {
 	assert(p);
-	if( this->headParticle == 0 )
+	if (this->headParticle == 0)
 	{ // first on list
 		this->headParticle = p;
 		p->next = 0;
-		p->prev= 0;
+		p->prev = 0;
 	}
-	else 
+	else
 	{ // add to front of list
 		headParticle->prev = p;
 		p->next = headParticle;
@@ -148,21 +164,21 @@ void ParticleEmitter::addParticleToList(Particle * const p )
 
 }
 
-void ParticleEmitter::removeParticleFromList(const Particle * const p )
+void ParticleEmitter::removeParticleFromList(const Particle * const p)
 {
 	// make sure we are not screwed with a null pointer
 	assert(p);
 
-	if( p->prev == 0 && p->next == 0  )
+	if (p->prev == 0 && p->next == 0)
 	{ // only one on the list
 		this->headParticle = 0;
 	}
-	else if( p->prev == 0 && p->next != 0  )
+	else if (p->prev == 0 && p->next != 0)
 	{ // first on the list
 		p->next->prev = 0;
 		this->headParticle = p->next;
 	}
-	else if( p->prev!= 0 && p->next == 0 )
+	else if (p->prev != 0 && p->next == 0)
 	{ // last on the list 
 		p->prev->next = 0;
 	}
@@ -171,7 +187,7 @@ void ParticleEmitter::removeParticleFromList(const Particle * const p )
 		p->prev->next = p->next;
 		p->next->prev = p->prev;
 	}
-	
+
 	// bye bye
 	delete p;
 }
@@ -186,12 +202,8 @@ void ParticleEmitter::draw() const
 	// get the camera matrix from OpenGL
 	glGetFloatv(GL_MODELVIEW_MATRIX, reinterpret_cast<float*>(&cameraMatrix));
 
-	// get the position from this matrix
-	Vect4D camPosVect;
-	cameraMatrix.get(3, &camPosVect );
-
 	// camera position
-	Matrix transCamera(camPosVect);
+	Matrix transCamera(cameraMatrix.v3);
 
 	// OpenGL goo... don't worrry about this
 	glVertexPointer(3, GL_FLOAT, 0, squareVertices);
@@ -200,7 +212,7 @@ void ParticleEmitter::draw() const
 	glEnableClientState(GL_COLOR_ARRAY);
 
 	// iterate throught the list of particles
-	for(Particle *it = headParticle; it != 0; it = it->next)
+	for (Particle *it = headParticle; it != 0; it = it->next)
 	{
 		// total transformation of particle
 		Matrix tmp = transCamera * Matrix(it->position) * Matrix(it->rotation);
@@ -212,7 +224,7 @@ void ParticleEmitter::draw() const
 		// draw the trangle strip
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-		
+
 		// clears or flushes some internal setting, used in debug, but is need for performance reasons
 		// magic...  really it's magic.
 		//GLenum glError = glGetError();
@@ -290,12 +302,12 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 
 	// Ses it's ugly - I didn't write this so don't bitch at me
 	// Sometimes code like this is inside real commerical code ( so now you know how it feels )
-	
+
 	// x - variance
 	float var = static_cast<float>(rand() % 1000) * 0.001f;
 	float *t_pos = reinterpret_cast<float*>(&pos);
 	float *t_var = &pos_variance[0];
-	if(static_cast<float>(rand() % 2) == 0)
+	if (static_cast<float>(rand() % 2) == 0)
 	{
 		var *= -1.0f;
 	}
@@ -305,62 +317,62 @@ void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
 	var = static_cast<float>(rand() % 1000) * 0.001f;
 	t_pos++;
 	t_var++;
-	if(static_cast<float>(rand() % 2) == 0)
+	if (static_cast<float>(rand() % 2) == 0)
 	{
 		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
-	
+
 	// z - variance
 	var = static_cast<float>(rand() % 1000) * 0.001f;
 	t_pos++;
 	t_var++;
-	if(static_cast<float>(rand() % 2) == 0)
+	if (static_cast<float>(rand() % 2) == 0)
 	{
 		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
-	
+
 	var = static_cast<float>(rand() % 1000) * 0.001f;
-	
+
 	// x  - add velocity
 	t_pos = &vel[0];
 	t_var = &vel_variance[0];
-	if(static_cast<float>(rand() % 2) == 0)
+	if (static_cast<float>(rand() % 2) == 0)
 	{
 		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
-	
+
 	// y - add velocity
 	var = static_cast<float>(rand() % 1000) * 0.001f;
 	t_pos++;
 	t_var++;
-	if(static_cast<float>(rand() % 2) == 0)
+	if (static_cast<float>(rand() % 2) == 0)
 	{
 		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
-	
+
 	// z - add velocity
 	var = static_cast<float>(rand() % 1000) * 0.001f;
 	t_pos++;
 	t_var++;
-	if(static_cast<float>(rand() % 2) == 0)
+	if (static_cast<float>(rand() % 2) == 0)
 	{
 		var *= -1.0f;
 	}
 	*t_pos += *t_var * var;
-	
+
 	// correct the sign
 	var = 2.0f * static_cast<float>(rand() % 1000) * 0.001f;
-	
-	if(static_cast<float>(rand() % 2) == 0)
+
+	if (static_cast<float>(rand() % 2) == 0)
 	{
 		var *= -1.0f;
 	}
 	sc = sc * var;
-}
+	}
 
 #elif 1
 void ParticleEmitter::Execute(Vect4D& pos, Vect4D& vel, Vect4D& sc)
@@ -458,7 +470,7 @@ void ParticleEmitter::operator delete(void * p)
 }
 
 void ParticleEmitter::operator delete[](void * p)
-{	
+{
 	_aligned_free(p);
 }
 
