@@ -8,8 +8,6 @@
 #include <xmmintrin.h>
 #include <smmintrin.h>  
 
-#define PROXY 1
-
 // forward declare
 class Vect4D;
 
@@ -26,13 +24,6 @@ public:
 	Matrix(const Vect4D * const SCALE);
 	Matrix(Vect4D const & TRANS);
 
-	//specialized for rvo and only floats
-	//Matrix(
-	//	float const &m0, float const &m1, float const &m2, float const &m3,
-	//	float const &m4, float const &m5, float const &m6, float const &m7,
-	//	float const &m8, float const &m9, float const &m10, float const &m11,
-	//	float const &m12, float const &m13, float const &m14, float const &m15);
-
 	Matrix(Vect4D const &v0, const Vect4D &v1, const Vect4D &v2, const Vect4D &v3);
 
 	Matrix &operator=(const Matrix &m); //assignment
@@ -40,12 +31,7 @@ public:
 
 	void setIdentMatrix();
 
-#if !PROXY
-	Matrix operator*(const Matrix &t) const;
-#endif
-
 	Matrix GetAdjugate();
-	Matrix& Matrix::operator/=(float const &t);
 
 	void Matrix::Inverse(Matrix &out);
 
@@ -100,7 +86,6 @@ public:
 
 //proxy shit
 
-#if PROXY
 struct mMul2
 {
 	const Matrix &m0, &m1;
@@ -154,7 +139,6 @@ struct mMul2
 	}
 
 };
-
 
 struct mMul3
 {
@@ -248,8 +232,6 @@ struct mMul3
 
 };
 
-
-
 inline mMul2 operator *(const Matrix &m0, const Matrix &m1)
 {
 	return mMul2(m0, m1);
@@ -260,5 +242,4 @@ inline mMul3 operator*(const mMul2 &m0, const Matrix &m1)
 	return mMul3(m0, m1);
 }
 
-#endif //proxy
 #endif  // Matrix.h

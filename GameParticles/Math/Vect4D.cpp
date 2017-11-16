@@ -42,10 +42,7 @@ void Vect4D::norm(Vect4D& out)
 
 	if( 0.0f < mag )
 	{
-		out.x = this->x / mag;
-		out.y = this->y / mag;
-		out.z = this->z / mag;
-		out.w = 1.0f;
+		out._m = _mm_set_ps(1.f, this->z / mag, this->y / mag, this->x / mag);
 	}
 }
 
@@ -56,7 +53,7 @@ Vect4D Vect4D::operator + (Vect4D const &t) const
 
 Vect4D Vect4D::operator - (Vect4D const &t) const
 {
-	return Vect4D(_mm_sub_ps(this->_m, t._m)); //this is working now... but i dont know why
+	return Vect4D(_mm_sub_ps(this->_m, t._m));
 }
 
 Vect4D Vect4D::operator *(float const &scale) const
@@ -71,34 +68,16 @@ Vect4D Vect4D::operator*=(float const & scale)
 	return *this;
 }
 
-float& Vect4D::operator[](const char &e )
+Vect4D Vect4D::operator+=(Vect4D const & v)
 {
-	switch(e)
-	{
-	case 0:
-			return x;
-			break;
-	case 1:
-			return y;
-			break;
-	case 2: 
-			return z;
-			break;
-	case 3:
-			return w;
-			break;
-	default:
-			assert(0);
-			return x;
-	}
+	this->_m = (_mm_add_ps(this->_m, v._m));
+
+	return *this;
 }
 
 void Vect4D::Cross(Vect4D const& vin, Vect4D& vout) const
 {
-	vout.x = (y*vin.z - z*vin.y);
-	vout.y = (z*vin.x - x*vin.z);
-	vout.z = (x*vin.y - y*vin.x);
-	vout.w = 1.0f;
+	vout._m = _mm_set_ps(1.f, x*vin.y - y*vin.x, z*vin.x - x*vin.z, y*vin.z - z*vin.y);
 }
 
 float Vect4D::altSqrt(float const &num) const

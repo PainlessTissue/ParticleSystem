@@ -2,18 +2,23 @@
 #include "Matrix.h"
 
 Particle::Particle()
-	:rotation_velocity(0.5f), life(0.0f), rotation(0.0f)
-{
-	// construtor
-	this->position = Vect4D(0.0f, 0.0f, 0.0f);
-	this->velocity = Vect4D(0.0f, 0.0f, 0.0f);
-	this->scale = Vect4D(1.0f, 1.0f, 1.0f);
-
-}
+	:rotation_velocity(0.5f),
+	life(0.0f),
+	rotation(0.0f),
+	position(Vect4D(0.0f, 0.0f, 0.0f)),
+	velocity(Vect4D(0.0f, 0.0f, 0.0f)),
+	scale(Vect4D(1.0f, 1.0f, 1.0f))
+{}
 
 Particle::Particle(const Particle & p)
-	:next(p.next), prev(p.prev), position(p.position), velocity(p.velocity),
-	scale(p.scale), rotation_velocity(p.rotation_velocity), life(p.life), rotation(p.rotation) {}
+	:next(p.next), 
+	prev(p.prev), 
+	position(p.position), 
+	velocity(p.velocity),
+	scale(p.scale), rotation_velocity(p.rotation_velocity), 
+	life(p.life), 
+	rotation(p.rotation) 
+{}
 
 Particle & Particle::operator=(const Particle & p)
 {
@@ -36,16 +41,6 @@ Particle::~Particle()
 
 void Particle::Update(float const & time_elapsed)
 {
-	// Rotate the matrices
-
-	//Matrix tmp(
-	//	this->diff_Row0,
-	//	this->diff_Row1,
-	//	this->diff_Row2,
-	//	this->diff_Row3);
-
-	//float MatrixScale = tmp.Determinant();
-
 	// serious math below - magic secret sauce
 	life += time_elapsed;
 	position = position + (velocity * time_elapsed);
@@ -53,14 +48,9 @@ void Particle::Update(float const & time_elapsed)
 	Vect4D v(3.0f, 4.0f, 0.0f);
 	position.Cross(Vect4D(0.0f, -0.25f, 1.0f), v);
 	v.norm(v);
-	position = position + v * 0.05f * life;
+	position += v * 0.05f * life;
 
-	//if( MatrixScale > 1.0f )
-	//{
-	//	MatrixScale = 1.0f/MatrixScale;
-	//};
-
-	rotation = rotation /*+ MatrixScale */ + rotation_velocity * time_elapsed *2.01f;
+	rotation += rotation_velocity * time_elapsed *2.01f;
 }
 
 void * Particle::operator new(size_t i)

@@ -36,10 +36,10 @@ public:
 	Vect4D operator * (float const &scale) const;
 
 	Vect4D operator *= (float const &f);
+	Vect4D operator += (Vect4D const &v);
+
 
 	void Cross(Vect4D const &vin, Vect4D &vout) const;
-
-	float &operator[](char const &e);
 
 	//faster square root because math.sqrt is slow
 	float altSqrt(float const &number) const;
