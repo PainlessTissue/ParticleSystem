@@ -8,11 +8,11 @@ class Particle
 {
 public:
 	friend class ParticleEmitter;
-	
-	Particle();	
+
+	Particle();
 	~Particle();
-	void Update(const float& time_elapsed);
-	void CopyDataOnly( Particle *p );
+	void Update(const double& time_elapsed);
+	void CopyDataOnly(Particle *p);
 private:
 	Particle *next;
 	Particle *prev;
@@ -23,16 +23,16 @@ private:
 	Vect4D  prev_Row3;
 
 	Vect4D	position;
-	float	life;
+	double	life;
 	Vect4D	velocity;
 	Vect4D	scale;
-	float	rotation;
+	double	rotation;
 	Vect4D  diff_Row0;
 	Vect4D  diff_Row1;
 	Vect4D  diff_Row2;
 	Vect4D  diff_Row3;
-	float	rotation_velocity;
-	
+	double	rotation_velocity;
+
 	Vect4D	curr_Row0;
 	Vect4D	curr_Row1;
 	Vect4D  curr_Row2;
